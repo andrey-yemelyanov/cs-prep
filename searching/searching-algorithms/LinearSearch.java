@@ -24,18 +24,4 @@ public class LinearSearch{
     assertThat(search(new int[] {1}, 1), is(0));
     assertThat(search(new int[] {1}, 0), is(-1));
   }
-  public static void main(String... args){
-    runTests();
-  }
-  static void runTests(){
-    Result r = JUnitCore.runClasses(LinearSearch.class);
-    if(!r.wasSuccessful()){
-      System.out.println("TEST FAILED!");
-      for (Failure failure : r.getFailures()) {
-        System.out.println(failure.getTrace());
-      }
-    }else{
-      System.out.println("SUCCESS!");
-    }
-  }
 }
