@@ -1,1 +1,6 @@
+To run in Notepad++
 cmd /c javac -cp .;C:\CSPREP\cs-prep\lib\junit-4.12.jar;C:\CSPREP\cs-prep\lib\hamcrest-core-1.3.jar $(FILE_NAME) && java -cp .;C:\CSPREP\cs-prep\lib\junit-4.12.jar;C:\CSPREP\cs-prep\lib\hamcrest-core-1.3.jar org.junit.runner.JUnitCore $(NAME_PART)
+
+To run in Linux (provided that lib folder is one level up)
+javac -cp ".:../lib/*" BinarySearch.java && java -cp ".:../lib/*" org.junit.runner.JUnitCore BinarySearch
+
