@@ -1,5 +1,5 @@
 To run in Notepad++
-cmd /c javac -cp .;C:\CSPREP\cs-prep\lib\junit-4.12.jar;C:\CSPREP\cs-prep\lib\hamcrest-core-1.3.jar $(FILE_NAME) && java -cp .;C:\CSPREP\cs-prep\lib\junit-4.12.jar;C:\CSPREP\cs-prep\lib\hamcrest-core-1.3.jar org.junit.runner.JUnitCore $(NAME_PART)
+cmd /c javac -cp .;C:\CSPREP\cs-prep\lib\* $(FILE_NAME) && java -cp .;C:\CSPREP\cs-prep\lib\* org.junit.runner.JUnitCore $(NAME_PART)
 
 To run Python in Notepad++
 cmd /c python $(FILE_NAME)
