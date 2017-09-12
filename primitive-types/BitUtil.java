@@ -20,6 +20,57 @@ public class BitUtil{
     return x | (rightmostBitSet - 1);
   }
   
+  static int parity(int x){
+    int result = 0;
+    while(x > 0){
+      result ^= 1;
+      x &= (x - 1); // drop the lowest set bit of x
+    }
+    return result;
+  }
+  
+  static int[] precomputeParity(int wordLength){
+    int[] cache = new int[(int)Math.pow(2, wordLength)];
+    for(int word = 0; word < cache.length; word++){
+      cache[word] = parity(word);
+    }
+    return cache;
+  }
+  
+  static int parity(int x, int[] cache){
+    /*
+      The parity of a binary word is 1 if the number of 1s in the word is odd, otherwise it is 0.
+      
+      Here we compute the parity of a 32-bit word.
+      Break the 32-bit word into 4 non-overlapping 8-bit words. Pre-compute and cache the parity of 
+      all 8-bit words - 2^8=256 values. For each 32 bit word, break it into 4 8-bit words and get 
+      each 8-bit word's parity from the cache (by indexing into the cache using the 8-bit word). 
+      Then XOR the 4 results. E.g. 1, 0, 1, 1 gives parity 1; 0, 0, 1, 1 gives parity 0.
+      Time complexity of determining parity of a 32-bit word is O(1).
+      Time complexity of pre-computing the cache: 256 8-bit words * O(n) = O(n).
+    */
+    
+    final int WORD_LEN = 8;
+    final int BIT_MASK = 0xFF;
+    // Note the logical shift right >>>! This is needed so that the sign bit is not propagated.
+    return cache[x >>> (3 * WORD_LEN)] ^
+           cache[(x >>> (2 * WORD_LEN)) & BIT_MASK] ^
+           cache[(x >>> (WORD_LEN)) & BIT_MASK] ^
+           cache[x & BIT_MASK];
+  }
+  
+  @Test
+  public void testParity(){
+    int[] cache = precomputeParity(8);
+    assertThat(parity(0, cache), is(0));
+    assertThat(parity(1, cache), is(1));
+    assertThat(parity(0b01011111, cache), is(0));
+    assertThat(parity(0b11011111, cache), is(1));
+    assertThat(parity(0b1101111111011111, cache), is(0));
+    assertThat(parity(0b110111111101111111011111, cache), is(1));
+    assertThat(parity(0b11011111110111111101111111011111, cache), is(0));
+  }
+  
   @Test
   public void testPropagateRightmostSetBit(){
     assertThat(propagateRightmostSetBit(0), is(0));
