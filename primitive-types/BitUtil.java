@@ -59,6 +59,24 @@ public class BitUtil{
            cache[x & BIT_MASK];
   }
   
+  static int swapBits(int x, int i, int j){
+    /*
+      If bits at pos i and j are the same, then do nothing - return the same int.
+      If the bits differ, flip their values.
+    */
+    int iBit = (x >> i) & 1;
+    int jBit = (x >> j) & 1;
+    if(iBit == jBit) return x;
+    return x ^ ((1 << i) | (1 << j));
+  }
+  
+  @Test
+  public void testSwapBits(){
+    assertThat(swapBits(0b00101101, 0, 2), is(0b00101101));
+    assertThat(swapBits(0b00101101, 0, 1), is(0b00101110));
+    assertThat(swapBits(0b00101101, 0, 7), is(0b10101100));
+  }
+  
   @Test
   public void testParity(){
     int[] cache = precomputeParity(8);
