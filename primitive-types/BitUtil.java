@@ -4,20 +4,58 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class BitUtil{
-  static boolean isPowerOfTwo(int x){
-    // find the rightmost set bit in x, the value must be equal to x
-    if(x == 0) return false;
-    return x == (x & ~(x - 1));
+  static int closestIntSameWeight(int x){
+    // Returns an int y closest to x that has the same number of set bits
+    // Swap the first 2 consecutive bits that differ, starting from the LSB.
+    final int WORD_LEN = 32;
+    for(int i = 0; i < WORD_LEN - 1; i++){
+      int iBit = (x >> i) & 1;
+      int nextBit = (x >> (i + 1)) & 1;
+      if(iBit != nextBit){
+        return swapBits(x, i, i + 1);
+      }
+    }
+    return x;
+  }
+  @Test
+  public void testClosestIntSameWight(){
+    assertThat(closestIntSameWeight(2), is(1));
+    assertThat(closestIntSameWeight(0), is(0));
+    assertThat(closestIntSameWeight(8), is(4));
+    assertThat(closestIntSameWeight(7), is(11));
   }
   
-  static int modPowOfTwo(int x, int powOfTwo){
-    return x & (powOfTwo - 1);
+  static int reverseBits(int x){
+    // reverse bits of a 32-bit word
+    final int WORD_LEN = 32;
+    for(int i = 0; i < WORD_LEN / 2; i++){
+      x = swapBits(x, i, WORD_LEN - i - 1);
+    }
+    return x;
+  }
+  @Test
+  public void testReverseBits(){
+    assertThat(reverseBits(0b0), is(0b0));
+    assertThat(reverseBits(0b1), is(0b10000000000000000000000000000000));
+    assertThat(reverseBits(0b10), is(0b01000000000000000000000000000000));
+    assertThat(reverseBits(0b00101101), is(0b10110100000000000000000000000000));
   }
   
-  static int propagateRightmostSetBit(int x){
-    int rightmostBitSet = x & (~(x - 1));
-    if(rightmostBitSet == 0) return x;
-    return x | (rightmostBitSet - 1);
+  static int swapBits(int x, int i, int j){
+    /*
+      If bits at pos i and j are the same, then do nothing - return the same int.
+      If the bits differ, flip their values.
+    */
+    int iBit = (x >> i) & 1;
+    int jBit = (x >> j) & 1;
+    if(iBit == jBit) return x;
+    return x ^ ((1 << i) | (1 << j));
+  }
+  @Test
+  public void testSwapBits(){
+    assertThat(swapBits(0b00101101, 0, 2), is(0b00101101));
+    assertThat(swapBits(0b00101101, 0, 1), is(0b00101110));
+    assertThat(swapBits(0b00101101, 0, 7), is(0b10101100));
   }
   
   static int parity(int x){
@@ -58,25 +96,6 @@ public class BitUtil{
            cache[(x >>> (WORD_LEN)) & BIT_MASK] ^
            cache[x & BIT_MASK];
   }
-  
-  static int swapBits(int x, int i, int j){
-    /*
-      If bits at pos i and j are the same, then do nothing - return the same int.
-      If the bits differ, flip their values.
-    */
-    int iBit = (x >> i) & 1;
-    int jBit = (x >> j) & 1;
-    if(iBit == jBit) return x;
-    return x ^ ((1 << i) | (1 << j));
-  }
-  
-  @Test
-  public void testSwapBits(){
-    assertThat(swapBits(0b00101101, 0, 2), is(0b00101101));
-    assertThat(swapBits(0b00101101, 0, 1), is(0b00101110));
-    assertThat(swapBits(0b00101101, 0, 7), is(0b10101100));
-  }
-  
   @Test
   public void testParity(){
     int[] cache = precomputeParity(8);
@@ -89,6 +108,15 @@ public class BitUtil{
     assertThat(parity(0b11011111110111111101111111011111, cache), is(0));
   }
   
+  static int propagateRightmostSetBit(int x){
+    /*
+      Create a mask containing all ones up until and excluding the rightmost set bit.
+      Turn on the bits by ORing with the mask.
+    */
+    int rightmostBitSet = x & (~(x - 1));
+    if(rightmostBitSet == 0) return x;
+    return x | (rightmostBitSet - 1);
+  }
   @Test
   public void testPropagateRightmostSetBit(){
     assertThat(propagateRightmostSetBit(0), is(0));
@@ -99,6 +127,9 @@ public class BitUtil{
     assertThat(propagateRightmostSetBit(0b11110001), is(0b11110001));
   }
   
+  static int modPowOfTwo(int x, int powOfTwo){
+    return x & (powOfTwo - 1);
+  }
   @Test
   public void testModPowOfTwo(){
     assertThat(modPowOfTwo(77, 64), is(13));
@@ -113,6 +144,11 @@ public class BitUtil{
     assertThat(modPowOfTwo(5, 2), is(1));
   }
   
+  static boolean isPowerOfTwo(int x){
+    // find the rightmost set bit in x, the value must be equal to x
+    if(x == 0) return false;
+    return x == (x & ~(x - 1));
+  }
   @Test
   public void testIsPowerOfTwo(){
     assertThat(isPowerOfTwo(1), is(true));
