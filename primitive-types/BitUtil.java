@@ -4,6 +4,34 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class BitUtil{
+  static int add(int x, int y){
+    final int WORD_LEN = 32;
+    int result = 0;
+    int carry = 0;
+    for(int i = 0; i < WORD_LEN; i++){
+      int operand1Bit = (x >> i) & 1;
+      int operand2Bit = (y >> i) & 1;
+      int resultBit = operand1Bit ^ operand2Bit ^ carry;
+      result |= (resultBit << i);
+      carry = (operand1Bit & operand2Bit) | (operand1Bit & carry) | (operand2Bit & carry);
+    }
+    return result;
+  }
+  @Test
+  public void testAddition(){
+    assertThat(add(0, 0), is(0));
+    assertThat(add(-1, 0), is(-1));
+    assertThat(add(1, 0), is(1));
+    assertThat(add(1, -1), is(0));
+    assertThat(add(10, 20), is(30));
+    assertThat(add(546, 123), is(669));
+    assertThat(add(45, 72), is(117));
+    assertThat(add(63, 63), is(126));
+    assertThat(add(-63, -63), is(-126));
+    assertThat(add(-63, 63), is(0));
+    assertThat(add(21329, 1000000), is(1021329));
+  }
+  
   static int closestIntSameWeight(int x){
     // Returns an int y closest to x that has the same number of set bits
     // Swap the first 2 consecutive bits that differ, starting from the LSB.
