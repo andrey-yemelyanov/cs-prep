@@ -4,15 +4,38 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class BitUtil{
+  static int multiply(int x, int y){
+    // multiplies two non-negative ints using shift-and-add algorithm
+    int result = 0; int i = 0;
+    while(y > 0){
+      int lsbY = y & 1;
+      if(lsbY != 0) result = add(result, x << i);
+      y >>>= 1;
+      i++;
+    }
+    return result;
+  }
+  @Test
+  public void testMultiply(){
+    assertThat(multiply(0, 0), is(0));
+    assertThat(multiply(1, 0), is(0));
+    assertThat(multiply(-1, 0), is(0));
+    assertThat(multiply(1, 1), is(1));
+    assertThat(multiply(1, 2), is(2));
+    assertThat(multiply(256, 711), is(182016));
+    assertThat(multiply(2, 1000000000), is(2000000000));
+  }
+  
   static int add(int x, int y){
     final int WORD_LEN = 32;
     int result = 0;
     int carry = 0;
+    // perform addition bit by bit starting from the LSB
     for(int i = 0; i < WORD_LEN; i++){
-      int operand1Bit = (x >> i) & 1;
-      int operand2Bit = (y >> i) & 1;
-      int resultBit = operand1Bit ^ operand2Bit ^ carry;
-      result |= (resultBit << i);
+      int operand1Bit = (x >> i) & 1; // extract i-th bit from operand 1
+      int operand2Bit = (y >> i) & 1; // extract i-th bit from operand 2
+      int resultBit = operand1Bit ^ operand2Bit ^ carry; // get i-th bit in result after addition
+      result |= (resultBit << i); // set i-th bit in result to resultBit
       carry = (operand1Bit & operand2Bit) | (operand1Bit & carry) | (operand2Bit & carry);
     }
     return result;
