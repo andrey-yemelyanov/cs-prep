@@ -33,6 +33,7 @@ public class BstUtil{
     return tail;
   }
   static Node bstToLinkedList(Node bstRoot){
+    head = null;
     bstToLinkedList(bstRoot, null);
     return head;
   }
@@ -56,5 +57,35 @@ public class BstUtil{
           new Node(9),
           new Node(15)));
     assertThat(listToString(bstToLinkedList(bstRoot)), is("3->4->5->7->9->10->15"));
+
+    bstRoot = null;
+    assertThat(listToString(bstToLinkedList(bstRoot)), is(""));
+
+    bstRoot = new Node(5);
+    assertThat(listToString(bstToLinkedList(bstRoot)), is("5"));
+
+    bstRoot =
+      new Node(5,
+        new Node(2),
+        null);
+    assertThat(listToString(bstToLinkedList(bstRoot)), is("2->5"));
+
+    bstRoot =
+      new Node(5,
+        new Node(2),
+        new Node(7));
+    assertThat(listToString(bstToLinkedList(bstRoot)), is("2->5->7"));
+
+    bstRoot =
+      new Node(5,
+        new Node(4,
+          new Node(3,
+            new Node(2,
+              new Node(1),
+              null),
+            null),
+          null),
+        null);
+    assertThat(listToString(bstToLinkedList(bstRoot)), is("1->2->3->4->5"));
   }
 }
