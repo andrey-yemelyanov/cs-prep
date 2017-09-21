@@ -4,6 +4,55 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class BitUtil{
+  static double pow(double x, int y){
+    if(y == 0) return 1;
+    if((y & 1) == 0) return pow(x * x, y >> 1);
+    else return x * pow(x * x, (y - 1) >> 1);
+  }
+  @Test
+  public void testPow(){
+    assertThat(pow(0, 0), is(1.0));
+    assertThat(pow(1, 0), is(1.0));
+    assertThat(pow(10, 0), is(1.0));
+    assertThat(pow(1, 5), is(1.0));
+    assertThat(pow(2, 2), is(4.0));
+    assertThat(pow(2, 3), is(8.0));
+    assertThat(pow(2, 5), is(32.0));
+    assertThat(pow(3, 8), is(6561.0));
+    assertThat(pow(2, 10), is(1024.0));
+  }
+  
+  static int divide(int x, int y){
+    // performs integer division of x by y
+    int quotient = 0;
+    int k = 32; long yPower = y << k;
+    while(x >= y){
+      while(yPower > x){
+        yPower >>= 1;
+        k--;
+      }
+      x -= yPower;
+      quotient += (1 << k);
+    }
+    return quotient;
+  }
+  @Test
+  public void testDivide(){
+    assertThat(divide(0, 1), is(0));
+    assertThat(divide(4, 5), is(0));
+    assertThat(divide(1, 10), is(0));
+    assertThat(divide(1, 1), is(1));
+    assertThat(divide(10, 10), is(1));
+    assertThat(divide(4, 2), is(2));
+    assertThat(divide(6, 1), is(6));
+    assertThat(divide(6, 3), is(2));
+    assertThat(divide(6, 2), is(3));
+    assertThat(divide(7, 2), is(3));
+    assertThat(divide(5, 3), is(1));
+    assertThat(divide(5, 2), is(2));
+    assertThat(divide(5, 20), is(0));
+  }
+  
   static int multiply(int x, int y){
     // multiplies two non-negative ints using shift-and-add algorithm
     int result = 0; int i = 0;
