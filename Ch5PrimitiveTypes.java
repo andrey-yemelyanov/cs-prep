@@ -3,7 +3,26 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
-public class BitUtil{
+public class Ch5PrimitiveTypes{
+  static int reverseDigits(int n){
+    int result = 0;
+    while(n > 0){
+      int digit = n % 10;
+      result = result * 10 + digit;
+      n /= 10;
+    }
+    return result;
+  }
+  @Test
+  public void testReverseDigits(){
+    assertThat(reverseDigits(0), is(0));
+    assertThat(reverseDigits(1), is(1));
+    assertThat(reverseDigits(20), is(2));
+    assertThat(reverseDigits(200), is(2));
+    assertThat(reverseDigits(11), is(11));
+    assertThat(reverseDigits(1234), is(4321));
+  }
+  
   static double pow(double x, int y){
     if(y == 0) return 1;
     if((y & 1) == 0) return pow(x * x, y >> 1);
