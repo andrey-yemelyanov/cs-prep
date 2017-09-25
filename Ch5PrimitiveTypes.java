@@ -4,6 +4,57 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch5PrimitiveTypes{
+  static Random random = new Random();
+  static int randomZeroOrOne(){
+    return random.nextInt(2);
+  }
+  static int random(int from, int to){
+    int numberOfOutcomes = to - from + 1;
+    int result = 0;
+    do{
+      result = 0;
+      for(int i = 0; (1 << i) < numberOfOutcomes; i++){
+        result = (result << 1) | randomZeroOrOne();
+      }
+    }while(result >= numberOfOutcomes);
+    return result + from;
+  }
+  @Test
+  public void testRandom(){
+    int from = 1; int to = 6;
+    int nTries = 10;
+    while(nTries-- > 0){
+     System.out.println(random(from, to)); 
+    }
+  }
+  
+  static boolean isPalindrome(int n){
+    while(n > 0){
+      int nDigits = (int)Math.floor(Math.log10(n)) + 1;
+      int pow = (int)Math.pow(10, nDigits - 1);
+      int mostSignificantDigit = n / pow; // get MSD
+      int leastSignificantDigit = n % 10; // get LSD
+      if(mostSignificantDigit != leastSignificantDigit) return false;
+      // remove MSD from n
+      n %= pow;
+      // remove LSD from n
+      n /= 10;
+    }
+    return true;
+  }
+  @Test
+  public void testIsPalindrome(){
+    assertThat(isPalindrome(0), is(true));
+    assertThat(isPalindrome(1), is(true));
+    assertThat(isPalindrome(10), is(false));
+    assertThat(isPalindrome(101), is(true));
+    assertThat(isPalindrome(11), is(true));
+    assertThat(isPalindrome(123221), is(false));
+    assertThat(isPalindrome(1234321), is(true));
+    assertThat(isPalindrome(55555), is(true));
+    assertThat(isPalindrome(12345), is(false));
+  }
+  
   static int reverseDigits(int n){
     int result = 0;
     while(n > 0){
@@ -21,6 +72,7 @@ public class Ch5PrimitiveTypes{
     assertThat(reverseDigits(200), is(2));
     assertThat(reverseDigits(11), is(11));
     assertThat(reverseDigits(1234), is(4321));
+    assertThat(reverseDigits(123425), is(524321));
   }
   
   static double pow(double x, int y){
