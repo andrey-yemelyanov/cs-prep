@@ -4,8 +4,7 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch5Arrays{
-  static void partition(int[] a){
-    final int nGroups = 4;
+  static void partition(int[] a, int nGroups){
     int i = 0;
     for(int k = 0; k < nGroups; k++){
       int groupId = a[i++];
@@ -25,11 +24,15 @@ public class Ch5Arrays{
   @Test
   public void testPartition(){
     int[] a = new int[]{0, 1, 2, 3};
-    partition(a);
+    partition(a, 4);
     assertThat(a, is(new int[]{0, 1, 2, 3}));
     
     a = new int[]{0, 1, 2, 3, 0, 1, 2, 3};
-    partition(a);
+    partition(a, 4);
     assertThat(a, is(new int[]{0, 0, 2, 2, 1, 1, 3, 3}));
+    
+    a = new int[]{0, 1, 0, 1, 1, 0, 0, 1};
+    partition(a, 2);
+    assertThat(a, is(new int[]{0, 0, 0, 0, 1, 1, 1, 1}));
   }
 }
