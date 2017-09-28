@@ -34,5 +34,9 @@ public class Ch5Arrays{
     a = new int[]{0, 1, 0, 1, 1, 0, 0, 1};
     partition(a, 2);
     assertThat(a, is(new int[]{0, 0, 0, 0, 1, 1, 1, 1}));
+    
+    a = new int[]{0,1,2,2,2,0,1,0,0,1};
+    partition(a, 3);
+    assertThat(a, is(new int[]{0, 0, 0, 0, 2, 2, 2, 1, 1, 1}));
   }
 }
