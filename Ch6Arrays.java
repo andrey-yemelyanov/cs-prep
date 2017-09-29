@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
-public class Ch5Arrays{
+public class Ch6Arrays{
   static int[] increment(int[] x){
     int[] y = new int[x.length + 1];
     int carry = 0;
