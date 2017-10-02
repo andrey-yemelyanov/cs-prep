@@ -4,6 +4,42 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int[] multiply(int[] x, int[] y){
+    int[] z = new int[x.length + y.length];
+    reverse(x); reverse(y);
+    for(int j = 0; j < y.length; j++){
+      int carry = 0;
+      for(int i = 0; i < x.length; i++){
+        int k = z.length - 1 - j - i;
+        int partial = x[i] * y[j] + z[k] + carry;
+        z[k] = partial % 10;
+        carry = partial / 10;
+        if(i == x.length - 1) z[k - 1] = carry;
+      }
+    }
+    return z;
+  }
+  static void reverse(int[] arr){
+    for(int i = 0; i < arr.length / 2; i++){
+      swap(arr, i, arr.length - 1 - i);
+    }
+  }
+  @Test
+  public void testMultiply(){
+    assertThat(multiply(new int[]{1,1}, new int[]{1,1}), is(new int[]{0,1,2,1}));
+    assertThat(multiply(new int[]{0}, new int[]{0}), is(new int[]{0,0}));
+    assertThat(multiply(new int[]{1}, new int[]{0}), is(new int[]{0,0}));
+    assertThat(multiply(new int[]{1}, new int[]{1}), is(new int[]{0,1}));
+    assertThat(multiply(new int[]{5}, new int[]{6}), is(new int[]{3,0}));
+    assertThat(multiply(new int[]{5}, new int[]{5}), is(new int[]{2,5}));
+    assertThat(multiply(new int[]{4}, new int[]{2}), is(new int[]{0,8}));
+    assertThat(multiply(new int[]{5,6,5,4,7,5,4}, new int[]{1,2,6,5}), is(new int[]{0,7,1,5,3,2,6,3,8,1,0}));
+    assertThat(multiply(new int[]{1,2,3}, new int[]{2}), is(new int[]{0,2,4,6}));
+    assertThat(multiply(new int[]{6,7}, new int[]{8,3}), is(new int[]{5,5,6,1}));
+    assertThat(multiply(new int[]{1,9,3,7,0,7,7,2,1}, new int[]{7,6,1,8,3,8,2,5,7,2,8,7}), is(new int[]{1,4,7,5,7,3,9,5,2,5,8,9,6,7,6,4,1,2,9,2,7}));
+    assertThat(multiply(new int[]{1,9,3,7,0,7,7,2,1}, new int[]{0}), is(new int[]{0,0,0,0,0,0,0,0,0,0}));
+  }
+  
   static int[] increment(int[] x){
     int[] y = new int[x.length + 1];
     int carry = 0;
