@@ -4,9 +4,47 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int distinct(int[] a){
+    return 0;
+  }
+  @Test
+  public void testDistinct(){
+    
+  }
+  
+  // deletes a key from array and returns number of items available after deletion
+  static int delete(int[] a, int key){
+    int k = 0;
+    for(int i = 0; i < a.length; i++){
+      if(a[i] != key){
+        a[k] = a[i];
+        k++;
+      }
+    }
+    return k;
+  }
+  @Test
+  public void testDelete(){
+    int[] a = new int[]{1,2,3,4,5};
+    assertThat(delete(a, 6), is(5));
+    assertThat(a, is(new int[]{1,2,3,4,5}));
+    
+    a = new int[]{1,2,3,4,5};
+    assertThat(delete(a, 1), is(4));
+    assertThat(a, is(new int[]{2,3,4,5,5}));
+    
+    a = new int[]{1,2,3,4,5};
+    assertThat(delete(a, 5), is(4));
+    assertThat(a, is(new int[]{1,2,3,4,5}));
+    
+    a = new int[]{1,2,1,3,4,1};
+    assertThat(delete(a, 1), is(3));
+    assertThat(a, is(new int[]{2,3,4,3,4,1}));
+  }
+  
   static int[] multiply(int[] x, int[] y){
     int[] z = new int[x.length + y.length];
-    reverse(x); reverse(y);
+    reverse(x); reverse(y); // reverse arrays so we can multiply left to right
     for(int j = 0; j < y.length; j++){
       int carry = 0;
       for(int i = 0; i < x.length; i++){
@@ -26,6 +64,7 @@ public class Ch6Arrays{
   }
   @Test
   public void testMultiply(){
+    assertThat(multiply(new int[]{0,0,1,1}, new int[]{0,0,1,1}), is(new int[]{0,0,0,0,0,1,2,1}));
     assertThat(multiply(new int[]{1,1}, new int[]{1,1}), is(new int[]{0,1,2,1}));
     assertThat(multiply(new int[]{0}, new int[]{0}), is(new int[]{0,0}));
     assertThat(multiply(new int[]{1}, new int[]{0}), is(new int[]{0,0}));
