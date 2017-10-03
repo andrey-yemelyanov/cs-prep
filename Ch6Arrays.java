@@ -4,12 +4,42 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  // removes duplicates from a sorted array
   static int distinct(int[] a){
-    return 0;
+    int k = 1;
+    for(int i = 1; i < a.length; i++){
+      if(a[i] != a[i - 1]) a[k++] = a[i];
+    }
+    for(int i = k; i < a.length; i++){
+      a[i] = 0;
+    }
+    return k;
   }
   @Test
   public void testDistinct(){
+    int[] a = new int[]{0};
+    assertThat(distinct(a), is(1));
+    assertThat(a, is(new int[]{0}));
     
+    a = new int[]{2};
+    assertThat(distinct(a), is(1));
+    assertThat(a, is(new int[]{2}));
+    
+    a = new int[]{1,2,3};
+    assertThat(distinct(a), is(3));
+    assertThat(a, is(new int[]{1,2,3}));
+    
+    a = new int[]{2,2,2};
+    assertThat(distinct(a), is(1));
+    assertThat(a, is(new int[]{2,0,0}));
+    
+    a = new int[]{2,2,2,3,3,3};
+    assertThat(distinct(a), is(2));
+    assertThat(a, is(new int[]{2,3,0,0,0,0}));
+    
+    a = new int[]{2,3,5,5,7,11,11,11,13};
+    assertThat(distinct(a), is(6));
+    assertThat(a, is(new int[]{2,3,5,7,11,13,0,0,0}));
   }
   
   // deletes a key from array and returns number of items available after deletion
