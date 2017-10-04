@@ -4,30 +4,33 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static void applyPermutation(){
+    
+  }
+  
   static int[] nextPermutation(int[] a){
     // Find longest non-increasing suffix and identify pivot
     int p = a.length - 1;
     while(p > 0 && a[p] <= a[p - 1]) p--;
     if(p == 0) return null; // already last permutation, next not available
-    p--; // pivot is the element before the non-increasing sequence begins
-    
+        
     int[] next = Arrays.copyOf(a, a.length);
     
     // Find rightmost successor to pivot in the suffix
-    int k = p + 1;
-    while(k < next.length && next[k] >= next[p]) k++;
-    k--;
+    int k = p;
+    while(k < next.length && next[k] >= next[p - 1]) k++;
     
     // swap with pivot
-    swap(next, p, k);
+    swap(next, p - 1, k - 1);
     
     // reverse the suffix
-    reverse(next, p + 1, next.length - 1);
+    reverse(next, p, next.length - 1);
     
     return next;
   }
   @Test
   public void testNextPermutation(){
+    assertThat(nextPermutation(new int[]{1}), is(nullValue()));
     assertThat(nextPermutation(new int[]{1,2,3,4,5}), is(new int[]{1,2,3,5,4}));
     assertThat(nextPermutation(new int[]{5,4,3,2,1}), is(nullValue()));
     assertThat(nextPermutation(new int[]{2,3,5,4,1}), is(new int[]{2,4,1,3,5}));
