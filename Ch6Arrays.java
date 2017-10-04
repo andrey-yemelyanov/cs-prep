@@ -4,6 +4,39 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int[] nextPermutation(int[] a){
+    // Find longest non-increasing suffix and identify pivot
+    int p = a.length - 1;
+    while(p > 0 && a[p] <= a[p - 1]) p--;
+    if(p == 0) return null; // already last permutation, next not available
+    p--; // pivot is the element before the non-increasing sequence begins
+    
+    int[] next = Arrays.copyOf(a, a.length);
+    
+    // Find rightmost successor to pivot in the suffix
+    int k = p + 1;
+    while(k < next.length && next[k] >= next[p]) k++;
+    k--;
+    
+    // swap with pivot
+    swap(next, p, k);
+    
+    // reverse the suffix
+    reverse(next, p + 1, next.length - 1);
+    
+    return next;
+  }
+  @Test
+  public void testNextPermutation(){
+    assertThat(nextPermutation(new int[]{1,2,3,4,5}), is(new int[]{1,2,3,5,4}));
+    assertThat(nextPermutation(new int[]{5,4,3,2,1}), is(nullValue()));
+    assertThat(nextPermutation(new int[]{2,3,5,4,1}), is(new int[]{2,4,1,3,5}));
+    assertThat(nextPermutation(new int[]{1,2,3,5,4}), is(new int[]{1,2,4,3,5}));
+    assertThat(nextPermutation(new int[]{0,1,2,5,3,3,0}), is(new int[]{0,1,3,0,2,3,5}));
+    assertThat(nextPermutation(new int[]{6,2,1,5,4,3,0}), is(new int[]{6,2,3,0,1,4,5}));
+    assertThat(nextPermutation(new int[]{1,0,3,2}), is(new int[]{1,2,0,3}));
+  }
+  
   // removes duplicates from a sorted array
   static int distinct(int[] a){
     int k = 1;
@@ -88,8 +121,11 @@ public class Ch6Arrays{
     return z;
   }
   static void reverse(int[] arr){
-    for(int i = 0; i < arr.length / 2; i++){
-      swap(arr, i, arr.length - 1 - i);
+    reverse(arr, 0, arr.length - 1);
+  }
+  static void reverse(int[] arr, int from, int to){
+    for(int i = from; i <= from + (to - from) / 2; i++){
+      swap(arr, i, to - i + from);
     }
   }
   @Test
