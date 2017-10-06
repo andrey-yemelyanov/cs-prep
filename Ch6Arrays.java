@@ -7,15 +7,16 @@ public class Ch6Arrays{
   static int[] applyPermutation(int[] a, int[] p){
     for(int i = 0; i < a.length; i++){
       if(p[i] >= 0){
-        int k = i;
-        int temp = a[i];
+        int current = i;
+        int val = a[current];
         do{
-          int nextK = p[k];
-          int nextTemp = a[nextK];
-          a[nextK] = temp;
-          p[k] -= p.length;
-          k = nextK; temp = nextTemp;
-        }while(k != i);
+          int next = p[current];
+          int nextVal = a[next];
+          a[next] = val;
+          p[current] -= p.length;
+          current = next;
+          val = nextVal;
+        }while(current != i);
       }
     }
     
