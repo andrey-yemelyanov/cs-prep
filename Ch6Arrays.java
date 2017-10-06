@@ -4,8 +4,49 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
-  static void applyPermutation(){
+  static int[] applyPermutation(int[] a, int[] p){
+    for(int i = 0; i < a.length; i++){
+      if(p[i] >= 0){
+        int k = i;
+        int temp = a[i];
+        do{
+          int nextK = p[k];
+          int nextTemp = a[nextK];
+          a[nextK] = temp;
+          p[k] -= p.length;
+          k = nextK; temp = nextTemp;
+        }while(k != i);
+      }
+    }
     
+    // restore permutation array
+    for(int i = 0; i < p.length; i++){
+      p[i] += p.length;
+    }
+    
+    return a;
+  }
+  @Test
+  public void testApplyPermutation(){
+    int[] a = new int[]{1,2,3,4,5};
+    int[] p = new int[]{0,1,2,3,4};
+    assertThat(applyPermutation(a, p), is(new int[]{1,2,3,4,5}));
+    assertThat(p, is(new int[]{0,1,2,3,4}));
+    
+    a = new int[]{1,2,3,4,5};
+    p = new int[]{4,3,2,1,0};
+    assertThat(applyPermutation(a, p), is(new int[]{5,4,3,2,1}));
+    assertThat(p, is(new int[]{4,3,2,1,0}));
+    
+    a = new int[]{1,2,3,4,5};
+    p = new int[]{1,0,4,2,3};
+    assertThat(applyPermutation(a, p), is(new int[]{2,1,4,5,3}));
+    assertThat(p, is(new int[]{1,0,4,2,3}));
+    
+    a = new int[]{1,2,3,4,5};
+    p = new int[]{0,1,3,2,4};
+    assertThat(applyPermutation(a, p), is(new int[]{1,2,4,3,5}));
+    assertThat(p, is(new int[]{0,1,3,2,4}));
   }
   
   static int[] nextPermutation(int[] a){
