@@ -4,6 +4,31 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int[] randomSample(int[] population, int sampleSize){
+    int[] sample = new int[sampleSize];
+    Random random = new Random();
+    for(int i = 0; i < sample.length; i++){
+      // generate random number r between i and population.length - 1
+      int r = random.nextInt(population.length - i) + i;
+      // swap population[r] and population[i]
+      swap(population, r, i);
+      // add random population member to sample[i]
+      sample[i] = population[i];
+    }
+    return sample;
+  }
+  @Test
+  public void testRandomSample(){
+    System.out.println();
+    int[] population = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    int SAMPLE_SIZE = 5;
+    for(int i = 0; i < 20; i++){
+      int[] sample = randomSample(population, SAMPLE_SIZE);
+      assertThat(sample.length, is(SAMPLE_SIZE));
+      System.out.println(Arrays.toString(sample));
+    }
+  }
+  
   static int[] applyPermutation(int[] a, int[] p){
     for(int i = 0; i < a.length; i++){
       if(p[i] >= 0){
