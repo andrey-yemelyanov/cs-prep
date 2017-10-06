@@ -22,7 +22,7 @@ public class Ch6Arrays{
     System.out.println();
     int[] population = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     final int SAMPLE_SIZE = 5;
-    final int N_RUNS = 100;
+    final int N_RUNS = 10;
     for(int i = 0; i < N_RUNS; i++){
       int[] sample = randomSample(population, SAMPLE_SIZE);
       assertThat(sample.length, is(SAMPLE_SIZE));
