@@ -26,14 +26,14 @@ public class Ch6Arrays{
     for(int i = 0; i < N_RUNS; i++){
       int[] sample = randomSample(population, SAMPLE_SIZE);
       assertThat(sample.length, is(SAMPLE_SIZE));
-      assertThat(countDistinct(sample), is(SAMPLE_SIZE));
+      assertTrue(allDistinct(sample));
       System.out.println(Arrays.toString(sample));
     }
   }
-  private int countDistinct(int[] a){
+  private boolean allDistinct(int[] a){
     HashSet<Integer> s = new HashSet<>();
     for(int i : a) s.add(i);
-    return s.size();
+    return s.size() == a.length;
   }
   
   static int[] applyPermutation(int[] a, int[] p){
