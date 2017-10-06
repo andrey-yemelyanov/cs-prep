@@ -21,12 +21,19 @@ public class Ch6Arrays{
   public void testRandomSample(){
     System.out.println();
     int[] population = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    int SAMPLE_SIZE = 5;
-    for(int i = 0; i < 20; i++){
+    final int SAMPLE_SIZE = 5;
+    final int N_RUNS = 100;
+    for(int i = 0; i < N_RUNS; i++){
       int[] sample = randomSample(population, SAMPLE_SIZE);
       assertThat(sample.length, is(SAMPLE_SIZE));
+      assertThat(countDistinct(sample), is(SAMPLE_SIZE));
       System.out.println(Arrays.toString(sample));
     }
+  }
+  private int countDistinct(int[] a){
+    HashSet<Integer> s = new HashSet<>();
+    for(int i : a) s.add(i);
+    return s.size();
   }
   
   static int[] applyPermutation(int[] a, int[] p){
