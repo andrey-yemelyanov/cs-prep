@@ -4,6 +4,48 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int nonuniform(int[] population, double[] probability){
+    // build a sorted array of prefix sums
+    double[] prefixSums = new double[probability.length];
+    prefixSums[0] = probability[0];
+    for(int i = 1; i < probability.length; i++){
+      prefixSums[i] = prefixSums[i - 1] + probability[i];
+    }
+    // generate a uniformly random number r between [0.0,1.0]
+    Random random = new Random();
+    double r = random.nextDouble();
+    // using upperBound, find interval where r falls - i
+    // return population[i]
+    return population[upperBound(r, prefixSums)];
+  }
+  static int upperBound(double d, double[] arr){
+    int from = 0; int to = arr.length - 1;
+    while(from <= to){
+      int mid = from + (to - from) / 2;
+      if(arr[mid] == d) return mid;
+      if(arr[mid] > d){
+        if(mid - 1 < 0 || arr[mid - 1] < d) return mid;
+        else to = mid - 1;
+      }else from = mid + 1;
+    }
+    return -1;
+  }
+  @Test
+  public void testNonuniform(){
+    int[] population = new int[]{3,5,7,11};
+    System.out.println("Non-uniform from population " + Arrays.toString(population));
+    //double[] probability = new double[]{9/18.0,6/18.0,2/18.0,1/18.0};
+    double[] probability = new double[]{0.25,0.25,0.25,0.25};
+    final int N_RUNS = 1000000;
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int i = 0; i < N_RUNS; i++){
+      int n = nonuniform(population, probability);
+      map.putIfAbsent(n, 0);
+      map.put(n, map.get(n) + 1);
+    }
+    System.out.println(map);
+  }
+  
   static int[] randomSample(int[] population, int sampleSize){
     int[] sample = new int[sampleSize];
     Random random = new Random();
@@ -19,9 +61,9 @@ public class Ch6Arrays{
   }
   @Test
   public void testRandomSample(){
-    System.out.println();
+    System.out.println("Random sample...");
     int[] population = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    final int SAMPLE_SIZE = 5;
+    final int SAMPLE_SIZE = 15;
     final int N_RUNS = 10;
     for(int i = 0; i < N_RUNS; i++){
       int[] sample = randomSample(population, SAMPLE_SIZE);
