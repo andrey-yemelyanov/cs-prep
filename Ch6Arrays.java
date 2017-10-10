@@ -4,6 +4,54 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int[] spiralOrdering(int[][] m){
+    int[] ordering = new int[m.length * m.length];
+    int i = 0;
+    for(int offset = 0; offset < (int) Math.ceil(m.length / 2.0); offset++){
+      i = matrixLayer(m, offset, i, ordering);
+    }
+    return ordering;
+  }
+  static int matrixLayer(int[][] m, int offset, int i, int[] ordering){
+    if(offset == m.length / 2){
+      ordering[i++] = m[offset][offset];
+      return i;
+    }
+    // add the first n-1 el. of the 1st row
+    for(int col = offset; col < m.length - 1 - offset; col++){
+      ordering[i++] = m[offset][col];
+    }
+    // add the first n-1 el. of the last col
+    for(int row = offset; row < m.length - 1 - offset; row++){
+      ordering[i++] = m[row][m.length - 1 - offset];
+    }
+    // add the last n-1 el. of the last row in reverse order
+    for(int col = m.length - 1 - offset; col > offset; col--){
+      ordering[i++] = m[m.length - 1 - offset][col];
+    }
+    // add the last n-1 el. of the first col in reverse order
+    for(int row = m.length - 1 - offset; row > offset; row--){
+      ordering[i++] = m[row][offset];
+    }
+    return i;
+  }
+  @Test
+  public void testSpiralOrdering(){
+    int[][] m = new int[][]{
+      {1,2,3},
+      {4,5,6},
+      {7,8,9}
+    };
+    assertThat(spiralOrdering(m), is(new int[]{1,2,3,6,9,8,7,4,5}));
+    m = new int[][]{
+      { 1,  2,  3,  4},
+      { 5,  6,  7,  8},
+      { 9, 10, 11, 12},
+      {13, 14, 15, 16}
+    };
+    assertThat(spiralOrdering(m), is(new int[]{1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10}));
+  }
+  
   static int nonuniform(int[] population, double[] probability){
     // build a sorted array of prefix sums
     double[] prefixSums = new double[probability.length];
