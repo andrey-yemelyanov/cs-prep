@@ -4,6 +4,30 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static int[] pascalTriangle(int nRows){
+    int[] a = new int[count(nRows - 1, nRows - 1)];
+    for(int row = 0; row < nRows; row++){
+      for(int col = 0; col < row + 1; col++){
+        if(row == col || col == 0) a[count(row, col) - 1] = 1;
+        else a[count(row, col) - 1] = a[count(row - 1, col - 1) - 1] + a[count(row - 1, col) - 1];
+      }
+    }
+    return a;
+  }
+  // returns number of elements in Pascal triangle up until given row and col
+  static int count(int row, int col){
+    int sum = (row * (row + 1)) / 2;
+    return sum + col + 1;
+  }
+  @Test
+  public void testPascalTriangle(){
+    assertThat(pascalTriangle(1), is(new int[]{1}));
+    assertThat(pascalTriangle(2), is(new int[]{1,1,1}));
+    assertThat(pascalTriangle(3), is(new int[]{1,1,1,1,2,1}));
+    assertThat(pascalTriangle(4), is(new int[]{1,1,1,1,2,1,1,3,3,1}));
+    assertThat(pascalTriangle(5), is(new int[]{1,1,1,1,2,1,1,3,3,1,1,4,6,4,1}));
+  }
+  
   static void rotate(int[][] m){
     for(int offset = 0; offset < m.length / 2; offset++){ // for each layer
       for(int i = 0; i < m.length - 2 * offset - 1; i++){ // rotate layer 'offset'
