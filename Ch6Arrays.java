@@ -4,6 +4,58 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch6Arrays{
+  static void rotate(int[][] m){
+    for(int offset = 0; offset < m.length / 2; offset++){ // for each layer
+      for(int i = 0; i < m.length - 2 * offset - 1; i++){ // rotate layer 'offset'
+        int temp = m[offset][offset + i];
+        m[offset][offset + i] = m[m.length - 1 - offset - i][offset];
+        m[m.length - 1 - offset - i][offset] = m[m.length - 1 - offset][m.length - 1 - offset - i];
+        m[m.length - 1 - offset][m.length - 1 - offset - i] = m[offset + i][m.length - 1 - offset];
+        m[offset + i][m.length - 1 - offset] = temp;
+      }
+    }
+  }
+  @Test
+  public void testRotate(){
+    int[][] m = new int[][]{{1}};
+    rotate(m);
+    assertThat(m, is(new int[][]{{1}}));
+    
+    m = new int[][]{
+      {1,2},
+      {3,4}};
+    rotate(m);
+    assertThat(m, is(new int[][]{
+      {3,1},
+      {4,2}}));
+      
+    m = new int[][]{
+      {1,  2,  3,  4},
+      {5,  6,  7,  8},
+      {9, 10, 11, 12},
+      {13,14, 15, 16}
+    };
+    rotate(m);
+    assertThat(m, is(new int[][]{
+      {13,  9, 5, 1},
+      {14, 10, 6, 2},
+      {15, 11, 7, 3},
+      {16, 12, 8, 4}
+    }));
+    
+    m = new int[][]{
+      {1,2,3},
+      {4,5,6},
+      {7,8,9}
+    };
+    rotate(m);
+    assertThat(m, is(new int[][]{
+      {7,4,1},
+      {8,5,2},
+      {9,6,3}
+    }));
+  }
+  
   static int[] spiralOrdering(int[][] m){
     int[] ordering = new int[m.length * m.length];
     int i = 0;
@@ -50,6 +102,13 @@ public class Ch6Arrays{
       {13, 14, 15, 16}
     };
     assertThat(spiralOrdering(m), is(new int[]{1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10}));
+    m = new int[][]{{1}};
+    assertThat(spiralOrdering(m), is(new int[]{1}));
+    m = new int[][]{
+      {1,2},
+      {3,4}
+    };
+    assertThat(spiralOrdering(m), is(new int[]{1,2,4,3}));
   }
   
   static int nonuniform(int[] population, double[] probability){
