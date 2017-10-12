@@ -5,19 +5,19 @@ import org.junit.Test;
 
 public class Ch6Arrays{
   static int[] pascalTriangle(int nRows){
-    int[] a = new int[count(nRows - 1, nRows - 1)];
+    int[] a = new int[index(nRows - 1, nRows - 1) + 1];
     for(int row = 0; row < nRows; row++){
       for(int col = 0; col < row + 1; col++){
-        if(row == col || col == 0) a[count(row, col) - 1] = 1;
-        else a[count(row, col) - 1] = a[count(row - 1, col - 1) - 1] + a[count(row - 1, col) - 1];
+        if(row == col || col == 0) a[index(row, col)] = 1;
+        else a[index(row, col)] = a[index(row - 1, col - 1)] + a[index(row - 1, col)];
       }
     }
     return a;
   }
-  // returns number of elements in Pascal triangle up until given row and col
-  static int count(int row, int col){
+  // returns index of the element in array that corresponds to given row and col in Pascal triangle
+  static int index(int row, int col){
     int sum = (row * (row + 1)) / 2;
-    return sum + col + 1;
+    return sum + col;
   }
   @Test
   public void testPascalTriangle(){
