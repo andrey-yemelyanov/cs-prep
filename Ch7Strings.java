@@ -4,6 +4,25 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static int columnId(String columnEncoding){
+    int code = 0;
+    for(char c : columnEncoding.toCharArray()){
+      code = code * 26 + c - 'A' + 1;
+    }
+    return code;
+  }
+  @Test
+  public void testColumnId(){
+    assertThat(columnId("A"), is(1));
+    assertThat(columnId("B"), is(2));
+    assertThat(columnId("Z"), is(26));
+    assertThat(columnId("AA"), is(27));
+    assertThat(columnId("ZZ"), is(702));
+    assertThat(columnId("AB"), is(28));
+    assertThat(columnId("ZY"), is(701));
+    assertThat(columnId("YZ"), is(676));
+  }
+  
   static String convert(String number, int base1, int base2){
     return toBase(toDecimal(number, base1), base2);
   }
@@ -43,6 +62,7 @@ public class Ch7Strings{
     assertThat(convert("ABCDEF", 16, 10), is("11259375"));
     assertThat(convert("-ABCDEF", 16, 10), is("-11259375"));
     assertThat(convert("-1A7", 13, 7), is("-615"));
+    assertThat(convert("ABCDEF", 16, 2), is("101010111100110111101111"));
   }
   
   static int stringToInt(String s){
