@@ -4,15 +4,50 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static String reverseWords(String s){
+    char[] str = s.toCharArray();
+    reverse(str, 0, str.length - 1);
+    int i = 0; int j = 0;
+    while(true){
+      while(j < s.length() && str[j] != ' ') j++;
+      reverse(str, i, j - 1);
+      if(j == str.length) break;
+      j++;
+      i = j;
+    }
+    return new String(str);
+  }
+  static void reverse(char[] s, int from, int to){
+    while(from < to) swapChars(s, from++, to--);
+  }
+  static void swapChars(char[] s, int i, int j){
+    char temp = s[i];
+    s[i] = s[j];
+    s[j] = temp;
+  }
+  @Test
+  public void testReverseWords(){
+    assertThat(reverseWords("john"), is("john"));
+    assertThat(reverseWords("a b c d"), is("d c b a"));
+    assertThat(reverseWords(""), is(""));
+    assertThat(reverseWords("I want ice cream"), is("cream ice want I"));
+    assertThat(reverseWords("Ram Turbine Design"), is("Design Turbine Ram"));
+    assertThat(reverseWords("   "), is("   "));
+    assertThat(reverseWords("51 12 52"), is("52 12 51"));
+  }
+  
   static boolean isPalindrome(String s){
     int i = 0; int j = s.length() - 1;
     while(i < j){
       while(!isAlphanumeric(s.charAt(i)) && i < j) i++; // skip non-alphanumeric chars from left
       while(!isAlphanumeric(s.charAt(j)) && i < j) j--; // skip non-alphanumeric chars from right
-      if(Character.toLowerCase(s.charAt(i)) != Character.toLowerCase(s.charAt(j))) return false;
+      if(toLower(s.charAt(i)) != toLower(s.charAt(j))) return false;
       i++; j--;
     }
     return true;
+  }
+  static char toLower(char c){
+    return Character.toLowerCase(c);
   }
   static boolean isAlphanumeric(char c){
     return Character.isDigit(c) || Character.isLetter(c);
