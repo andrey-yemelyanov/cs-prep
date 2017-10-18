@@ -4,6 +4,52 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static StringBuilder replaceRemove(StringBuilder s){
+    // forward iteration: remove "b"s
+    int insertAt = 0; int countA = 0;
+    for(int i = 0; i < s.length(); i++){
+      if(s.charAt(i) != 'b') s.setCharAt(insertAt++, s.charAt(i));
+      if(s.charAt(i) == 'a') countA++;
+    }
+    
+    // resize StringBuilder to fit the resulting string
+    int len = insertAt + countA;
+    if(len < s.length()){ // remove chars not in final string
+      int from = insertAt; int to = s.length();
+      s.delete(from, to);
+    }
+    else {
+      int to = len - s.length();
+      for(int i = 0; i < to; i++) s.append(' '); // append chars to fit the final string
+    }
+            
+    // backward iteration: remove "a"s
+    int nextChar = insertAt - 1; int writeAt = s.length() - 1;
+    while(nextChar >= 0){
+      if(s.charAt(nextChar) == 'a'){
+        s.setCharAt(writeAt--, 'd');
+        s.setCharAt(writeAt--, 'd');
+      }else{
+        s.setCharAt(writeAt--, s.charAt(nextChar));
+      }
+      nextChar--;
+    }
+    
+    return s;
+  }
+  @Test
+  public void testReplaceRemove(){
+    assertThat(replaceRemove(new StringBuilder("bacaba")).toString(), is("ddcdddd")); 
+    assertThat(replaceRemove(new StringBuilder("cddc")).toString(), is("cddc"));
+    assertThat(replaceRemove(new StringBuilder("bcb")).toString(), is("c"));
+    assertThat(replaceRemove(new StringBuilder("aca")).toString(), is("ddcdd"));
+    assertThat(replaceRemove(new StringBuilder("a")).toString(), is("dd"));
+    assertThat(replaceRemove(new StringBuilder("bbbbbb")).toString(), is(""));
+    assertThat(replaceRemove(new StringBuilder("b")).toString(), is(""));
+    assertThat(replaceRemove(new StringBuilder("c")).toString(), is("c"));
+    assertThat(replaceRemove(new StringBuilder("ab")).toString(), is("dd"));
+  }
+  
   static int columnId(String columnEncoding){
     int code = 0;
     for(char c : columnEncoding.toCharArray()){
