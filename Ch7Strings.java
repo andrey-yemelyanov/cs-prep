@@ -4,6 +4,32 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static boolean isPalindrome(String s){
+    int i = 0; int j = s.length() - 1;
+    while(i < j){
+      while(!isAlphanumeric(s.charAt(i)) && i < j) i++; // skip non-alphanumeric chars from left
+      while(!isAlphanumeric(s.charAt(j)) && i < j) j--; // skip non-alphanumeric chars from right
+      if(Character.toLowerCase(s.charAt(i)) != Character.toLowerCase(s.charAt(j))) return false;
+      i++; j--;
+    }
+    return true;
+  }
+  static boolean isAlphanumeric(char c){
+    return Character.isDigit(c) || Character.isLetter(c);
+  }
+  @Test
+  public void testIsPalindrome(){
+    assertTrue(isPalindrome("A man, a plan,  a canal, PanaMA!"));
+    assertFalse(isPalindrome("canal"));
+    assertFalse(isPalindrome("Ray a Ray"));
+    assertFalse(isPalindrome("Some random sentence..."));
+    assertTrue(isPalindrome("Able was I, ere I saw ELBA!!!"));
+    assertTrue(isPalindrome(""));
+    assertTrue(isPalindrome("a"));
+    assertTrue(isPalindrome("a "));
+    assertTrue(isPalindrome(", .. !@ \\||* *"));
+  }
+  
   static StringBuilder replaceRemove(StringBuilder s){
     // forward iteration: remove "b"s
     int insertAt = 0; int countA = 0;
@@ -48,6 +74,7 @@ public class Ch7Strings{
     assertThat(replaceRemove(new StringBuilder("b")).toString(), is(""));
     assertThat(replaceRemove(new StringBuilder("c")).toString(), is("c"));
     assertThat(replaceRemove(new StringBuilder("ab")).toString(), is("dd"));
+    assertThat(replaceRemove(new StringBuilder("abcdabcd")).toString(), is("ddcdddcd"));
   }
   
   static int columnId(String columnEncoding){
