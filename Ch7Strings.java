@@ -4,6 +4,30 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static final String[] keypad = new String[]{
+    "0", "1", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"
+  };
+  static void computeMnemonics(String phoneNum, int i, String mnemonics, List<String> mnemonicsList){
+    if(i == phoneNum.length()) mnemonicsList.add(mnemonics);
+    else{
+      int digit = phoneNum.charAt(i) - '0';
+      for(char letter : keypad[digit].toCharArray()){
+        computeMnemonics(phoneNum, i + 1, mnemonics + letter, mnemonicsList);
+      }
+    }
+  }
+  static List<String> computeMnemonics(String phoneNum){
+    List<String> mnemonicsList = new ArrayList<>();
+    computeMnemonics(phoneNum, 0, "", mnemonicsList);
+    return mnemonicsList;
+  }
+  @Test
+  public void testComputeMnemonics(){
+    System.out.println(computeMnemonics("123"));
+    System.out.println(computeMnemonics("790"));
+    System.out.println(computeMnemonics("550052"));
+  }
+  
   static String reverseWords(String s){
     char[] str = s.toCharArray();
     reverse(str, 0, str.length - 1);
