@@ -4,6 +4,38 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static String getSequence(int n){
+    String s = "1";
+    while(n-- > 1) s = nextSequence(s);
+    return s;
+  }
+  static String nextSequence(String s){
+    String next = "";
+    int count = 1; char prev = s.charAt(0);
+    for(int i = 1; i < s.length(); i++){
+      char current = s.charAt(i);
+      if(current == prev) count++;
+      else{
+        next += count + "" + prev;
+        count = 1;
+      }
+      prev = current;
+    }
+    next += count + "" + prev;
+    return next;
+  }
+  @Test
+  public void testGetSequence(){
+    assertThat(getSequence(1), is("1"));
+    assertThat(getSequence(2), is("11"));
+    assertThat(getSequence(3), is("21"));
+    assertThat(getSequence(4), is("1211"));
+    assertThat(getSequence(5), is("111221"));
+    assertThat(getSequence(6), is("312211"));
+    assertThat(getSequence(7), is("13112221"));
+    assertThat(getSequence(8), is("1113213211"));
+  }
+  
   static final String[] keypad = new String[]{
     "0", "1", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"
   };
