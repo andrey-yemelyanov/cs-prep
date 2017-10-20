@@ -4,24 +4,50 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
-  static Map<Character, Integer> m = new HashMap<>();
+  static Map<Character, Integer> romanToInt = new HashMap<>();
+  static NavigableMap<Integer, String> intToRoman = new TreeMap<>();
   static{
-    m.put('I', 1);
-    m.put('V', 5);
-    m.put('X', 10);
-    m.put('L', 50);
-    m.put('C', 100);
-    m.put('D', 500);
-    m.put('M', 1000);
+    romanToInt.put('I', 1);
+    romanToInt.put('V', 5);
+    romanToInt.put('X', 10);
+    romanToInt.put('L', 50);
+    romanToInt.put('C', 100);
+    romanToInt.put('D', 500);
+    romanToInt.put('M', 1000);
+    
+    intToRoman.put(1, "I");
+    intToRoman.put(4, "IV");
+    intToRoman.put(5, "V");
+    intToRoman.put(9, "IX");
+    intToRoman.put(10, "X");
+    intToRoman.put(40, "XL");
+    intToRoman.put(50, "L");
+    intToRoman.put(90, "XC");
+    intToRoman.put(100, "C");
+    intToRoman.put(400, "CD");
+    intToRoman.put(500, "D");
+    intToRoman.put(900, "CM");
+    intToRoman.put(1000, "M");
+  }
+  static String integerToRoman(int n){
+    int floor = intToRoman.floorKey(n);
+    if(floor == n) return intToRoman.get(n);
+    return intToRoman.get(floor) + integerToRoman(n - floor);
   }
   static int romanToInteger(String roman){
     char[] c = roman.toCharArray();
-    int s = m.get(c[c.length - 1]);
+    int s = romanToInt.get(c[c.length - 1]);
     for(int i = c.length - 2; i >= 0; i--){
-      if(m.get(c[i]) < m.get(c[i + 1])) s -= m.get(c[i]);
-      else s += m.get(c[i]);
+      if(romanToInt.get(c[i]) < romanToInt.get(c[i + 1])) s -= romanToInt.get(c[i]);
+      else s += romanToInt.get(c[i]);
     }
     return s;
+  }
+  @Test
+  public void testIntToRomanAndBack(){
+    for(int i = 1; i <= 5000; i++){
+      assertThat(romanToInteger(integerToRoman(i)), is(i));
+    }
   }
   @Test
   public void testRomanToInteger(){
