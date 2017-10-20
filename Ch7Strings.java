@@ -4,6 +4,45 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static Map<Character, Integer> m = new HashMap<>();
+  static{
+    m.put('I', 1);
+    m.put('V', 5);
+    m.put('X', 10);
+    m.put('L', 50);
+    m.put('C', 100);
+    m.put('D', 500);
+    m.put('M', 1000);
+  }
+  static int romanToInteger(String roman){
+    char[] c = roman.toCharArray();
+    int s = m.get(c[c.length - 1]);
+    for(int i = c.length - 2; i >= 0; i--){
+      if(m.get(c[i]) < m.get(c[i + 1])) s -= m.get(c[i]);
+      else s += m.get(c[i]);
+    }
+    return s;
+  }
+  @Test
+  public void testRomanToInteger(){
+    assertThat(romanToInteger("I"), is(1));
+    assertThat(romanToInteger("LIX"), is(59));
+    assertThat(romanToInteger("L"), is(50));
+    assertThat(romanToInteger("II"), is(2));
+    assertThat(romanToInteger("IV"), is(4));
+    assertThat(romanToInteger("VI"), is(6));
+    assertThat(romanToInteger("VII"), is(7));
+    assertThat(romanToInteger("VIII"), is(8));
+    assertThat(romanToInteger("IX"), is(9));
+    assertThat(romanToInteger("XI"), is(11));
+    assertThat(romanToInteger("MCM"), is(1900));
+    assertThat(romanToInteger("LXXXIX"), is(89));
+    assertThat(romanToInteger("DCCCXC"), is(890));
+    assertThat(romanToInteger("MDCCC"), is(1800));
+    assertThat(romanToInteger("XCIV"), is(94));
+    assertThat(romanToInteger("XLIV"), is(44));
+  }
+  
   static String getSequence(int n){
     String s = "1";
     while(n-- > 1) s = nextSequence(s);
