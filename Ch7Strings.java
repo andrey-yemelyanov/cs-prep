@@ -4,6 +4,22 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static String snakeString(String s){
+    char[] out = new char[s.length()];
+    int writeAt = 0;
+    // write top row
+    for(int i = 1; i < s.length(); i += 4) out[writeAt++] = s.charAt(i);
+    // write middle row
+    for(int i = 0; i < s.length(); i += 2) out[writeAt++] = s.charAt(i);
+    // write bottom row
+    for(int i = 3; i < s.length(); i += 4) out[writeAt++] = s.charAt(i);
+    return new String(out);
+  }
+  @Test
+  public void testSnakeString(){
+    assertThat(snakeString("Hello World!"), is("e lHloWrdlo!"));
+  }
+  
   static List<String> getValidIpAddresses(String s){
     List<String> ipAddresses = new ArrayList<>();
     for(int i = 0; i < s.length() && i < 3; i++){
