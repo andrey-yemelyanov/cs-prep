@@ -4,6 +4,42 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static String encode(String s){
+    String code = ""; 
+    if(s.length() == 0) return code;
+    int count = 1;
+    char prev = s.charAt(0);
+    for(int i = 1; i < s.length(); i++){
+      char current = s.charAt(i);
+      if(current == prev) count++;
+      else{
+        code += count + "" + prev;
+        prev = current;
+        count = 1;
+      }
+    }
+    code += count + "" + prev;
+    return code;
+  }
+  static String decode(String s){
+    String decoded = "";
+    for(int i = 0; i < s.length(); i += 2){
+      char c = s.charAt(i + 1);
+      int count = s.charAt(i) - '0';
+      while(count-- > 0) decoded += c;
+    }
+    return decoded;
+  }
+  @Test
+  public void testEncodeDecode(){
+    assertThat(decode(encode("")), is(""));
+    assertThat(decode(encode("a")), is("a"));
+    assertThat(decode(encode("aaa")), is("aaa"));
+    assertThat(decode(encode("ab")), is("ab"));
+    assertThat(decode(encode("aabb")), is("aabb"));
+    assertThat(decode(encode("aaaabcccaa")), is("aaaabcccaa"));
+  }
+  
   static String snakeString(String s){
     char[] out = new char[s.length()];
     int writeAt = 0;
