@@ -4,6 +4,53 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static List<String> getValidIpAddresses(String s){
+    List<String> ipAddresses = new ArrayList<>();
+    for(int i = 0; i < s.length() && i < 3; i++){
+      String octet1 = s.substring(0, i + 1);
+      if(isValidOctet(octet1)){
+        for(int j = i + 1; j < s.length() && j < i + 4; j++){
+          String octet2 = s.substring(i + 1, j + 1);
+          if(isValidOctet(octet2)){
+            for(int k = j + 1; k < s.length() && k < j + 4; k++){
+              String octet3 = s.substring(j + 1, k + 1);
+              if(isValidOctet(octet3)){
+                if(k + 1 < s.length()){
+                  String octet4 = s.substring(k + 1);
+                  if(isValidOctet(octet4)){
+                    ipAddresses.add(octet1 + "." + octet2 + "." + octet3 + "." + octet4);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return ipAddresses;
+  }
+  static boolean isValidOctet(String octet){
+    if(octet.length() > 3) return false;
+    if(octet.startsWith("0") && octet.length() > 1) return false;
+    int val = Integer.parseInt(octet);
+    return val >= 0 && val <= 255;
+  }
+  @Test
+  public void testGetValidIpAddresses(){
+    assertThat(getValidIpAddresses("19216811"), is(
+      Arrays.asList(
+      "1.92.168.11",
+      "19.2.168.11",
+      "19.21.68.11",
+      "19.216.8.11",
+      "19.216.81.1",
+      "192.1.68.11",
+      "192.16.8.11",
+      "192.16.81.1",
+      "192.168.1.1"
+      )));
+  }
+  
   static Map<Character, Integer> romanToInt = new HashMap<>();
   static NavigableMap<Integer, String> intToRoman = new TreeMap<>();
   static{
