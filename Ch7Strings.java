@@ -101,6 +101,11 @@ public class Ch7Strings{
       "192.16.81.1",
       "192.168.1.1"
       )));
+    assertThat(getValidIpAddresses("123"), is(new ArrayList<String>()));
+    assertThat(getValidIpAddresses("1234"), is(Arrays.asList("1.2.3.4")));
+    assertThat(getValidIpAddresses(""), is(Arrays.asList()));
+    assertThat(getValidIpAddresses("255255255255"), is(Arrays.asList("255.255.255.255")));
+    assertThat(getValidIpAddresses("0000"), is(Arrays.asList("0.0.0.0")));
   }
   
   static Map<Character, Integer> romanToInt = new HashMap<>();
