@@ -4,6 +4,40 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node reverseList(Node head){
+    Node prev = null;
+    Node current = head;
+    while(current != null){
+      Node next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+    return prev;
+  }
+  @Test
+  public void testReverseList(){
+    Node list = toLinkedList();
+    Node expected = toLinkedList();
+    assertThat(toString(reverseList(list)), is(toString(expected)));
+    
+    list = toLinkedList(1);
+    expected = toLinkedList(1);
+    assertThat(toString(reverseList(list)), is(toString(expected)));
+    
+    list = toLinkedList(1,2);
+    expected = toLinkedList(2,1);
+    assertThat(toString(reverseList(list)), is(toString(expected)));
+    
+    list = toLinkedList(1,2,3);
+    expected = toLinkedList(3,2,1);
+    assertThat(toString(reverseList(list)), is(toString(expected)));
+    
+    list = toLinkedList(1,2,3,4,5,6);
+    expected = toLinkedList(6,5,4,3,2,1);
+    assertThat(toString(reverseList(list)), is(toString(expected)));
+  }
+  
   static Node mergeLists(Node l1, Node l2){
     if(l1 == null && l2 == null) return null;
     if(l1 == null) return l2;
