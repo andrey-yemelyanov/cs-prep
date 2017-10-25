@@ -4,6 +4,48 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch7Strings{
+  static int rabinKarp(String text, String pattern){
+    final int notFound = -1;
+    final int p = 23;
+    if(pattern.length() > text.length()) return notFound;
+    
+    // compute hash for 'pattern' and substring of 'text'
+    int hashPattern = 0; int hashText = 0;
+    for(int i = 0; i < pattern.length(); i++){
+      hashPattern += ((int)pattern.charAt(i)) * Math.pow(p, i);
+      hashText += ((int)text.charAt(i)) * Math.pow(p, i);
+    }
+    
+    for(int i = 0; i < text.length() - pattern.length() + 1; i++){
+      //System.out.printf("Pattern = %d, Text substr = %d\n", hashPattern, hashText);
+      if(hashPattern == hashText && pattern.equals(text.substring(i, i + pattern.length()))){
+        return i;
+      }
+      if(i + pattern.length() < text.length()){
+        // compute next text substring hash using rolling hash
+        hashText -= (int)text.charAt(i);
+        hashText /= p;
+        hashText += ((int)text.charAt(i + pattern.length())) * Math.pow(p, pattern.length() - 1);
+      }
+    }
+    
+    return notFound;
+  }
+  @Test
+  public void testRabinKarp(){
+    assertThat(rabinKarp("programming", "prog"), is(0));
+    assertThat(rabinKarp("programming", "ram"), is(4));
+    assertThat(rabinKarp("programming", "bing"), is(-1));
+    assertThat(rabinKarp("programming", "s"), is(-1));
+    assertThat(rabinKarp("programming", "g"), is(3));
+    assertThat(rabinKarp("programming", "ingo"), is(-1));
+    assertThat(rabinKarp("programming", "ing"), is(8));
+    assertThat(rabinKarp("programming", "programming"), is(0));
+    assertThat(rabinKarp("programming", "m"), is(6));
+    assertThat(rabinKarp("programming", "programming in C#"), is(-1));
+    assertThat(rabinKarp("programming in C#", "C#"), is(15));
+  }
+  
   static String encode(String s){
     String code = ""; 
     if(s.length() == 0) return code;
