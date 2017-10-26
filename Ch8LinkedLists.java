@@ -4,6 +4,64 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node reverseList(Node head, int from, int to){
+    if(from == to) return head;
+    Node predecessor = null;
+    if(from > 1){
+      predecessor = head;
+      for(int i = 0; i < from - 2; i++) predecessor = predecessor.next;
+    }
+    Node reverseTail = predecessor == null ? head : predecessor.next;
+    Node prev = null;
+    Node current = reverseTail;
+    for(int i = 0; i < to - from + 1; i++){
+      Node next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+    reverseTail.next = current;
+    if(predecessor == null) return prev;
+    else{
+      predecessor.next = prev;
+      return head;
+    }
+  }
+  @Test
+  public void testReverseSubList(){
+    Node list = linkedList();
+    Node expected = linkedList();
+    assertThat(toString(reverseList(list,1,1)), is(toString(expected)));
+    
+    list = linkedList(1);
+    expected = linkedList(1);
+    assertThat(toString(reverseList(list,1,1)), is(toString(expected)));
+    
+    list = linkedList(1,2);
+    expected = linkedList(2,1);
+    assertThat(toString(reverseList(list,1,2)), is(toString(expected)));
+    
+    list = linkedList(1,2);
+    expected = linkedList(1,2);
+    assertThat(toString(reverseList(list,1,1)), is(toString(expected)));
+    
+    list = linkedList(1,2,3,4,5);
+    expected = linkedList(2,1,3,4,5);
+    assertThat(toString(reverseList(list,1,2)), is(toString(expected)));
+    
+    list = linkedList(1,2,3,4,5);
+    expected = linkedList(1,2,5,4,3);
+    assertThat(toString(reverseList(list,3,5)), is(toString(expected)));
+    
+    list = linkedList(1,2,3,4,5,6,7,8);
+    expected = linkedList(1,2,3,7,6,5,4,8);
+    assertThat(toString(reverseList(list,4,7)), is(toString(expected)));
+    
+    list = linkedList(1,2,3,4,5,6,7,8);
+    expected = linkedList(8,7,6,5,4,3,2,1);
+    assertThat(toString(reverseList(list,1,8)), is(toString(expected)));
+  }
+  
   static Node reverseList(Node head){
     Node prev = null;
     Node current = head;
@@ -17,24 +75,24 @@ public class Ch8LinkedLists{
   }
   @Test
   public void testReverseList(){
-    Node list = toLinkedList();
-    Node expected = toLinkedList();
+    Node list = linkedList();
+    Node expected = linkedList();
     assertThat(toString(reverseList(list)), is(toString(expected)));
     
-    list = toLinkedList(1);
-    expected = toLinkedList(1);
+    list = linkedList(1);
+    expected = linkedList(1);
     assertThat(toString(reverseList(list)), is(toString(expected)));
     
-    list = toLinkedList(1,2);
-    expected = toLinkedList(2,1);
+    list = linkedList(1,2);
+    expected = linkedList(2,1);
     assertThat(toString(reverseList(list)), is(toString(expected)));
     
-    list = toLinkedList(1,2,3);
-    expected = toLinkedList(3,2,1);
+    list = linkedList(1,2,3);
+    expected = linkedList(3,2,1);
     assertThat(toString(reverseList(list)), is(toString(expected)));
     
-    list = toLinkedList(1,2,3,4,5,6);
-    expected = toLinkedList(6,5,4,3,2,1);
+    list = linkedList(1,2,3,4,5,6);
+    expected = linkedList(6,5,4,3,2,1);
     assertThat(toString(reverseList(list)), is(toString(expected)));
   }
   
@@ -45,7 +103,7 @@ public class Ch8LinkedLists{
     
     Node head = null; Node tail = null;
     while(l1 != null && l2 != null){
-      if(l1.data < l2.data){
+      if(l1.data.compareTo(l2.data) < 0){
         if(head == null){
           head = l1;
           tail = head;
@@ -72,39 +130,39 @@ public class Ch8LinkedLists{
   }
   @Test
   public void testMergeLists(){
-    Node l1 = toLinkedList(2,5,7);
-    Node l2 = toLinkedList(3,11);
-    Node expected = toLinkedList(2,3,5,7,11);
+    Node l1 = linkedList(2,5,7);
+    Node l2 = linkedList(3,11);
+    Node expected = linkedList(2,3,5,7,11);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
-    l1 = toLinkedList(2,5,7);
-    l2 = toLinkedList();
-    expected = toLinkedList(2,5,7);
+    l1 = linkedList(2,5,7);
+    l2 = linkedList();
+    expected = linkedList(2,5,7);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
-    l1 = toLinkedList();
-    l2 = toLinkedList(3,11);
-    expected = toLinkedList(3,11);
+    l1 = linkedList();
+    l2 = linkedList(3,11);
+    expected = linkedList(3,11);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
-    l1 = toLinkedList(2,5,7);
-    l2 = toLinkedList(0,1);
-    expected = toLinkedList(0,1,2,5,7);
+    l1 = linkedList(2,5,7);
+    l2 = linkedList(0,1);
+    expected = linkedList(0,1,2,5,7);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
-    l1 = toLinkedList(2,5,7);
-    l2 = toLinkedList(10,11,12,13);
-    expected = toLinkedList(2,5,7,10,11,12,13);
+    l1 = linkedList(2,5,7);
+    l2 = linkedList(10,11,12,13);
+    expected = linkedList(2,5,7,10,11,12,13);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
-    l1 = toLinkedList(1,3,5,7);
-    l2 = toLinkedList(2,4,6);
-    expected = toLinkedList(1,2,3,4,5,6,7);
+    l1 = linkedList(1,3,5,7);
+    l2 = linkedList(2,4,6);
+    expected = linkedList(1,2,3,4,5,6,7);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
     l1 = null;
-    l2 = toLinkedList(2,4,6);
-    expected = toLinkedList(2,4,6);
+    l2 = linkedList(2,4,6);
+    expected = linkedList(2,4,6);
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
     
     l1 = null;
@@ -113,20 +171,20 @@ public class Ch8LinkedLists{
     assertThat(toString(mergeLists(l1, l2)), is(toString(expected)));
   }
   
-  static class Node{
-    public int data;
+  static class Node<T extends Comparable<T>>{
+    public T data;
     public Node next;
   }
-  static Node toLinkedList(int... list){
-    Node head = null;
-    Node tail = null;
-    for(int data : list){
+  static <T extends Comparable<T>> Node<T> linkedList(T... list){
+    Node<T> head = null;
+    Node<T> tail = null;
+    for(T data : list){
       if(head == null){
-        head = new Node();
+        head = new Node<T>();
         head.data = data;
         tail = head;
       }else{
-        tail.next = new Node();
+        tail.next = new Node<T>();
         tail.next.data = data;
         tail = tail.next;
       }
