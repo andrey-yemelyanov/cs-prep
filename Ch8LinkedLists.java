@@ -4,6 +4,70 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node findCycle(Node head){
+    Node fast = head; Node slow = head;
+    while(fast != null && fast.next != null && fast.next.next != null){
+      slow = slow.next;
+      fast = fast.next.next;
+      if(slow == fast){ // the two pointers meet - there is a cycle
+        // find cycle length
+        int cycleLen = 0;
+        do{
+          cycleLen++;
+          fast = fast.next;
+        }while(slow != fast);
+        // Use two pointers that are 'cycleLen' apart. Advance pointers by one node 
+        // until they meet. The node where they meet is the start node of the cycle.
+        Node first = head; Node second = head;
+        for(int i = 0; i < cycleLen; i++) second = second.next;
+        while(first != second){
+          first = first.next;
+          second = second.next;
+        }
+        return first;
+      }
+    }
+    return null;
+  }
+  @Test
+  public void testFindCycle(){
+    Node list = linkedList(); // empty list - no cycle
+    assertNull(findCycle(list));
+    
+    list = linkedList(1); // no cycle
+    assertNull(findCycle(list));
+    
+    list = linkedList(1); // cycle (self-loop) 1->1->...
+    list.next = list;
+    assertNotNull(findCycle(list));
+    assertThat(findCycle(list).data.compareTo(1), is(0));
+    
+    list = linkedList(1,2,3,4); // no cycle
+    assertNull(findCycle(list));
+    
+    list = linkedList(1,2,3,4,5,6,7,8,9,10); // no cycle
+    assertNull(findCycle(list));
+    
+    list = linkedList(1,2,3,4); // cycle 1->2->3->4->2->...
+    Node tail = list;
+    while(tail.next != null) tail = tail.next;
+    tail.next = list.next;
+    assertNotNull(findCycle(list));
+    assertThat(findCycle(list).data.compareTo(2), is(0));
+    
+    list = linkedList(1,2,3,4); // cycle 1->2->3->4->1->...
+    tail = list;
+    while(tail.next != null) tail = tail.next;
+    tail.next = list;
+    assertNotNull(findCycle(list));
+    assertThat(findCycle(list).data.compareTo(1), is(0));
+    
+    list = linkedList(1,2); // cycle 1->2->1->...
+    list.next.next = list;
+    assertNotNull(findCycle(list));
+    assertThat(findCycle(list).data.compareTo(1), is(0));
+  }
+  
   static Node reverseList(Node head, int from, int to){
     if(from == to) return head;
     Node predecessor = null;
@@ -22,10 +86,8 @@ public class Ch8LinkedLists{
     }
     reverseTail.next = current;
     if(predecessor == null) return prev;
-    else{
-      predecessor.next = prev;
-      return head;
-    }
+    predecessor.next = prev;
+    return head;
   }
   @Test
   public void testReverseSubList(){
