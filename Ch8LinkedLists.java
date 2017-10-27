@@ -4,6 +4,35 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  // deletes a non-tail node in a linked list in O(1) time by copying successor's data
+  // and deleting the successor
+  static Node deleteNode(Node list, Node nodeToDelete){
+    if(nodeToDelete == list) return list.next; // deleting head
+    nodeToDelete.data = nodeToDelete.next.data;
+    nodeToDelete.next = nodeToDelete.next.next;
+    return list;
+  }
+  @Test
+  public void testDeleteNode(){
+    // delete the head
+    Node list = linkedList(1);
+    list = deleteNode(list, list);
+    assertNull(list);
+    assertThat(len(list), is(0));
+    
+    // delete the head
+    list = linkedList(1,2,3,4);
+    list = deleteNode(list, list);
+    assertNotNull(list);
+    assertThat(toString(list), is(toString(linkedList(2,3,4))));
+    
+    // delete a node in the middle - 3
+    list = linkedList(1,2,3,4);
+    list = deleteNode(list, list.next.next);
+    assertNotNull(list);
+    assertThat(toString(list), is(toString(linkedList(1,2,4))));
+  }
+  
   static Node findFirstOverlappingNode(Node list1, Node list2){
     int len1 = len(list1);
     int len2 = len(list2);
