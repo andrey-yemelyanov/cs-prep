@@ -4,12 +4,70 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node findFirstOverlappingNode(Node list1, Node list2){
+    int len1 = len(list1);
+    int len2 = len(list2);
+    Node longerList = len1 == Math.max(len1, len2) ? list1 : list2;
+    Node shorterList = list1 == longerList ? list2 : list1;
+    // advance longer list by diff in list lengths
+    for(int i = 0; i < Math.abs(len1 - len2); i++) longerList = longerList.next;
+    // advance both lists in tandem by one node until a common node is found
+    while(longerList != null && shorterList != null){
+      if(longerList == shorterList) return longerList;
+      longerList = longerList.next;
+      shorterList = shorterList.next;
+    }
+    return null;
+  }
+  @Test
+  public void testFindFirstOverlappingNode(){
+    // empty lists
+    Node list1 = linkedList();
+    Node list2 = linkedList();
+    assertNull(findFirstOverlappingNode(list1, list2));
+    
+    // non-overlapping lists
+    list1 = linkedList(1,2,3);
+    list2 = linkedList(4,5,6);
+    assertNull(findFirstOverlappingNode(list1, list2));
+    
+    // overlapping lists - same length of 6, overlapping node is 5
+    list1 = linkedList(1,2);
+    list2 = linkedList(3,4,5,6,7,8);
+    list1.next.next = list2.next.next;
+    assertNotNull(findFirstOverlappingNode(list1, list2));
+    assertThat(findFirstOverlappingNode(list1, list2).data.compareTo(5), is(0));
+    
+    // overlapping lists - diff lengths, overlapping node is 4
+    list1 = linkedList(1,2,3);
+    list2 = linkedList(4,5,6);
+    list1.next.next.next = list2;
+    assertNotNull(findFirstOverlappingNode(list1, list2));
+    assertThat(findFirstOverlappingNode(list1, list2).data.compareTo(4), is(0));
+    
+    // overlapping lists - diff lengths, overlapping node is 6
+    list1 = linkedList(1);
+    list2 = linkedList(2,3,4,5,6);
+    list1.next = list2.next.next.next.next;
+    assertNotNull(findFirstOverlappingNode(list1, list2));
+    assertThat(findFirstOverlappingNode(list1, list2).data.compareTo(6), is(0));
+  }
+  static int len(Node head){
+    int len = 0;
+    Node current = head;
+    while(current != null){
+      len++;
+      current = current.next;
+    }
+    return len;
+  }
+  
   static Node findCycle(Node head){
     Node fast = head; Node slow = head;
     while(fast != null && fast.next != null && fast.next.next != null){
       slow = slow.next;
       fast = fast.next.next;
-      if(slow == fast){ // the two pointers meet - there is a cycle
+      if(slow == fast){ // the two pointers meet - there is a cycle!
         // find cycle length
         int cycleLen = 0;
         do{
@@ -48,14 +106,14 @@ public class Ch8LinkedLists{
     list = linkedList(1,2,3,4,5,6,7,8,9,10); // no cycle
     assertNull(findCycle(list));
     
-    list = linkedList(1,2,3,4); // cycle 1->2->3->4->2->...
+    list = linkedList(1,2,3,4); // cycle 1->2->3->4->2->3->4->...
     Node tail = list;
     while(tail.next != null) tail = tail.next;
     tail.next = list.next;
     assertNotNull(findCycle(list));
     assertThat(findCycle(list).data.compareTo(2), is(0));
     
-    list = linkedList(1,2,3,4); // cycle 1->2->3->4->1->...
+    list = linkedList(1,2,3,4); // cycle 1->2->3->4->1->2->3->4...
     tail = list;
     while(tail.next != null) tail = tail.next;
     tail.next = list;
