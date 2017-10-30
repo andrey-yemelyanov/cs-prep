@@ -4,6 +4,43 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  //  Use two iterators. Advance the second iterator by k-steps.
+  // Then advance both iterators in tandem by one node. When the second
+  // iterator reached the tail node, the first iterator will point at (k+1)-th last node.
+  static Node deleteKthLastNode(Node head, int k){
+    Node first = head; Node second = head;
+    for(int i = 0; i < k; i++) second = second.next;
+    while(second != null && second.next != null){
+      first = first.next;
+      second = second.next;
+    }
+    if(first == head) return head.next;
+    first.next = first.next.next;
+    return head;
+  }
+  @Test
+  public void testDeleteKthLastNode(){
+    Node list = linkedList(1);
+    list = deleteKthLastNode(list, 1);
+    assertNull(list);
+    
+    list = linkedList(1,2,3,4,5,6);
+    list = deleteKthLastNode(list, 1);
+    assertThat(toString(list), is(toString(linkedList(1,2,3,4,5))));
+    
+    list = linkedList(1,2,3,4,5,6);
+    list = deleteKthLastNode(list, 2);
+    assertThat(toString(list), is(toString(linkedList(1,2,3,4,6))));
+    
+    list = linkedList(1,2,3,4,5,6);
+    list = deleteKthLastNode(list, 3);
+    assertThat(toString(list), is(toString(linkedList(1,2,3,5,6))));
+    
+    list = linkedList(1,2,3,4,5,6);
+    list = deleteKthLastNode(list, 6);
+    assertThat(toString(list), is(toString(linkedList(2,3,4,5,6))));
+  }
+  
   // deletes a non-tail node in a linked list in O(1) time by copying successor's data
   // and deleting the successor
   static Node deleteNode(Node list, Node nodeToDelete){
