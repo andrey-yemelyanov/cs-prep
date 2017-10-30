@@ -4,7 +4,43 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
-  //  Use two iterators. Advance the second iterator by k-steps.
+  static Node removeDuplicates(Node head){
+    Node current = head; Node prev = head;
+    while(prev != null){
+      // skip all successors with the same value
+      while(current != null && 
+            current.next != null && 
+            current.next.data.compareTo(current.data) == 0){
+        current = current.next;
+      }
+      prev.next = current.next;
+      prev = current.next;
+      current = prev;
+    }
+    return head;
+  }
+  @Test
+  public void testRemoveDuplicates(){
+    Node list = linkedList();
+    assertNull(removeDuplicates(list));
+    
+    list = linkedList(1);
+    assertThat(toString(removeDuplicates(list)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,1);
+    assertThat(toString(removeDuplicates(list)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,1,1,1);
+    assertThat(toString(removeDuplicates(list)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(removeDuplicates(list)), is(toString(linkedList(1,2,3,4,5))));
+    
+    list = linkedList(1,1,1,2,2,2,2,3,3,4,5,5);
+    assertThat(toString(removeDuplicates(list)), is(toString(linkedList(1,2,3,4,5))));
+  }
+  
+  // Use two iterators. Advance the second iterator by k-steps.
   // Then advance both iterators in tandem by one node. When the second
   // iterator reached the tail node, the first iterator will point at (k+1)-th last node.
   static Node deleteKthLastNode(Node head, int k){
