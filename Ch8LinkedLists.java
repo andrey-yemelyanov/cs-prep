@@ -4,6 +4,54 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node evenOddMerge(Node head){
+    if(head == null) return null;
+    
+    Node even = head; Node evenHead = even;
+    Node odd = head.next; Node oddHead = head.next;
+    
+    // create even and odd lists
+    while(even != null && odd != null){
+      even.next = odd.next;
+      even = even.next;
+      if(even != null){
+        odd.next = even.next;
+        odd = odd.next;
+      }
+    }
+    
+    // find even list tail
+    even = evenHead;
+    while(even.next != null) even = even.next;
+    
+    // append odd list to even list
+    even.next = oddHead;
+    return head;
+  }
+  @Test
+  public void testEvenOddMerge(){
+    Node list = linkedList();
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList())));
+    
+    list = linkedList(1);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,2);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1,2))));
+    
+    list = linkedList(1,2,3);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1,3,2))));
+    
+    list = linkedList(1,2,3,4);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1,3,2,4))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1,3,5,2,4))));
+    
+    list = linkedList(1,2,3,4,5,6,7,8,9,10);
+    assertThat(toString(evenOddMerge(list)), is(toString(linkedList(1,3,5,7,9,2,4,6,8,10))));
+  }
+  
   static Node rightCyclicShift(Node head, int k){
     int len = len(head);
     k %= len;
