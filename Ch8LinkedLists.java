@@ -4,6 +4,49 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node rightCyclicShift(Node head, int k){
+    int len = len(head);
+    k %= len;
+    Node cutNode = head;
+    for(int i = 0; i < len - k - 1; i++) cutNode = cutNode.next;
+    if(cutNode.next == null) return head;
+    Node newHead = cutNode.next;
+    Node tail = newHead;
+    while(tail.next != null) tail = tail.next;
+    tail.next = head;
+    cutNode.next = null;
+    return newHead;
+  }
+  @Test
+  public void testRightCyclicShift(){
+    Node list = linkedList(1);
+    assertThat(toString(rightCyclicShift(list, 0)), is(toString(linkedList(1))));
+    
+    list = linkedList(1);
+    assertThat(toString(rightCyclicShift(list, 5)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,2);
+    assertThat(toString(rightCyclicShift(list, 1)), is(toString(linkedList(2,1))));
+    
+    list = linkedList(1,2);
+    assertThat(toString(rightCyclicShift(list, 2)), is(toString(linkedList(1,2))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(rightCyclicShift(list, 0)), is(toString(linkedList(1,2,3,4,5))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(rightCyclicShift(list, 1)), is(toString(linkedList(5,1,2,3,4))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(rightCyclicShift(list, 3)), is(toString(linkedList(3,4,5,1,2))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(rightCyclicShift(list, 4)), is(toString(linkedList(2,3,4,5,1))));
+    
+    list = linkedList(1,2,3,4,5);
+    assertThat(toString(rightCyclicShift(list, 5)), is(toString(linkedList(1,2,3,4,5))));
+  }
+  
   static Node removeDuplicates(Node head){
     Node current = head; Node prev = head;
     while(prev != null){
