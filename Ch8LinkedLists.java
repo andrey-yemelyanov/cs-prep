@@ -4,6 +4,37 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  // reverse second half of the linked list and compare the two halves
+  static boolean isPalindrome(Node head){
+    int len = len(head);
+    if(len < 2) return true;
+    int mid = (int)Math.ceil(len / 2.0);
+    head = reverseList(head, mid + 1, len);
+    Node firstHalf = head;
+    Node secondHalf = head;
+    for(int i = 0; i < mid; i++) secondHalf = secondHalf.next;
+    while(secondHalf != null){
+      if(firstHalf.data.compareTo(secondHalf.data) != 0) return false;
+      secondHalf = secondHalf.next;
+      firstHalf = firstHalf.next;
+    }
+    return true;
+  }
+  @Test
+  public void testIsPalindrome(){
+    assertTrue(isPalindrome(linkedList()));
+    assertTrue(isPalindrome(linkedList(1)));
+    assertTrue(isPalindrome(linkedList(1,1)));
+    assertFalse(isPalindrome(linkedList(1,2)));
+    assertFalse(isPalindrome(linkedList(1,2,3)));
+    assertTrue(isPalindrome(linkedList(1,2,1)));
+    assertTrue(isPalindrome(linkedList(1,2,2,1)));
+    assertFalse(isPalindrome(linkedList(1,2,3,1)));
+    assertTrue(isPalindrome(linkedList(1,2,3,3,2,1)));
+    assertTrue(isPalindrome(linkedList(1,2,3,2,1)));
+    assertFalse(isPalindrome(linkedList(1,4,3,3,2,1)));
+  }
+  
   static Node evenOddMerge(Node head){
     if(head == null) return null;
     
