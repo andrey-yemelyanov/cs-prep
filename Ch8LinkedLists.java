@@ -4,6 +4,89 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node pivot(Node head, int k){
+    Node lessThanHead = null; Node lessThanTail = null;
+    Node equalHead = null; Node equalTail = null;
+    Node greaterThanHead = null; Node greaterThanTail = null;
+    Node current = head;
+    while(current != null){
+      int c = current.data.compareTo(k);
+      if(c < 0){
+        if(lessThanHead == null){
+          lessThanHead = current;
+          lessThanTail = current;
+        }else{
+          lessThanTail.next = current;
+          lessThanTail = lessThanTail.next;
+        }
+      }else if(c == 0){
+        if(equalHead == null){
+          equalHead = current;
+          equalTail = current;
+        }else{
+          equalTail.next = current;
+          equalTail = equalTail.next;
+        }
+      }else{
+        if(greaterThanHead == null){
+          greaterThanHead = current;
+          greaterThanTail = current;
+        }else{
+          greaterThanTail.next = current;
+          greaterThanTail = greaterThanTail.next;
+        }
+      }
+      current = current.next;
+    }
+    
+    if(lessThanTail != null) lessThanTail.next = null;
+    if(equalTail != null) equalTail.next = null;
+    if(greaterThanTail != null) greaterThanTail.next = null;
+    
+    Node newHead = greaterThanHead;
+    if(equalHead != null){
+      equalTail.next = newHead;
+      newHead = equalHead;
+    }
+    if(lessThanHead != null){
+      lessThanTail.next = newHead;
+      newHead = lessThanHead;
+    }
+    return newHead;
+  }
+  @Test
+  public void testPivot(){
+    Node list = linkedList();
+    assertThat(toString(pivot(list, 1)), is(toString(linkedList())));
+    
+    list = linkedList(1);
+    assertThat(toString(pivot(list, 1)), is(toString(linkedList(1))));
+    
+    list = linkedList(1);
+    assertThat(toString(pivot(list, 0)), is(toString(linkedList(1))));
+    
+    list = linkedList(1);
+    assertThat(toString(pivot(list, 2)), is(toString(linkedList(1))));
+    
+    list = linkedList(7,5,0,0,4,2);
+    assertThat(toString(pivot(list, 3)), is(toString(linkedList(0,0,2,7,5,4))));
+    
+    list = linkedList(7,5,0,0,4,2);
+    assertThat(toString(pivot(list, 4)), is(toString(linkedList(0,0,2,4,7,5))));
+    
+    list = linkedList(7,5,0,0,4,2);
+    assertThat(toString(pivot(list, 10)), is(toString(linkedList(7,5,0,0,4,2))));
+    
+    list = linkedList(7,5,0,0,4,2);
+    assertThat(toString(pivot(list, -1)), is(toString(linkedList(7,5,0,0,4,2))));
+    
+    list = linkedList(1,2,3,4,5,6,7,8,9);
+    assertThat(toString(pivot(list, 5)), is(toString(linkedList(1,2,3,4,5,6,7,8,9))));
+    
+    list = linkedList(9,8,7,6,5,4,3,2,1);
+    assertThat(toString(pivot(list, 5)), is(toString(linkedList(4,3,2,1,5,9,8,7,6))));
+  }
+  
   // reverse second half of the linked list and compare the two halves
   static boolean isPalindrome(Node head){
     int len = len(head);
@@ -33,6 +116,7 @@ public class Ch8LinkedLists{
     assertTrue(isPalindrome(linkedList(1,2,3,3,2,1)));
     assertTrue(isPalindrome(linkedList(1,2,3,2,1)));
     assertFalse(isPalindrome(linkedList(1,4,3,3,2,1)));
+    assertTrue(isPalindrome(linkedList('a','b','c','c','b','a')));
   }
   
   static Node evenOddMerge(Node head){
