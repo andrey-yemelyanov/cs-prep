@@ -4,6 +4,91 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static <T extends Number & Comparable<T>> Node<T> add(Node<T> list1, Node<T> list2){
+    list1 = reverseList(list1);
+    list2 = reverseList(list2);
+    int carry = 0;
+    Node result = null;
+    while(list1 != null && list2 != null){
+      int s = list1.data.intValue() + list2.data.intValue() + carry;
+      carry = s / 10;
+      result = insertFirst(result, s % 10);
+      list1 = list1.next;
+      list2 = list2.next;
+    }
+    while(list1 != null){
+      int s = list1.data.intValue() + carry;
+      carry = s / 10;
+      result = insertFirst(result, s % 10);
+      list1 = list1.next;
+    }
+    while(list2 != null){
+      int s = list2.data.intValue() + carry;
+      carry = s / 10;
+      result = insertFirst(result, s % 10);
+      list2 = list2.next;
+    }
+    if(carry != 0) result = insertFirst(result, carry);
+    return result;
+  }
+  static <T extends Comparable<T>> Node insertFirst(Node list, T item){
+    Node<T> node = new Node<T>();
+    node.data = item;
+    node.next = list;
+    return node;
+  }
+  @Test
+  public void testAdd(){
+    Node list1 = linkedList(1);
+    Node list2 = linkedList(1);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(2))));
+    
+    list1 = linkedList(0);
+    list2 = linkedList(0);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(0))));
+    
+    list1 = linkedList(1,2);
+    list2 = linkedList(1,2,3,4,5);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,2,3,5,7))));
+    
+    list1 = linkedList(9,9);
+    list2 = linkedList(9,9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,9,8))));
+    
+    list1 = linkedList(0);
+    list2 = linkedList(0,0,0,1,2);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(0,0,0,1,2))));
+    
+    list1 = linkedList(1);
+    list2 = linkedList(9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,0))));
+    
+    list1 = linkedList(9);
+    list2 = linkedList(9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,8))));
+    
+    list1 = linkedList(9);
+    list2 = linkedList(9,9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,0,8))));
+    
+    list1 = linkedList(3,9,8);
+    list2 = linkedList(9,4,7);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,3,4,5))));
+    
+    list1 = linkedList(3,9,8);
+    list2 = linkedList(9,4,7,9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(9,8,7,7))));
+    
+    list1 = linkedList(3,9,8);
+    list2 = linkedList(9,9,7,9);
+    assertThat(toString(add(list1, list2)), is(toString(linkedList(1,0,3,7,7))));
+    
+    list1 = linkedList(4,5,6,6,4,8,7,9,7,9,8,1,3,4,4,8,4,8);
+    list2 = linkedList(9,9,8,9,7,7,8,4,9,4,5,4,6,4,6,4,8,8,7,4);
+    assertThat(toString(add(list1, list2)), 
+      is(toString(linkedList(1,0,0,3,5,4,4,3,3,7,4,3,4,4,5,9,9,3,7,2,2))));
+  }
+  
   static Node pivot(Node head, int k){
     Node lessThanHead = null; Node lessThanTail = null;
     Node equalHead = null; Node equalTail = null;
