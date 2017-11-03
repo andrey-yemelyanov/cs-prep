@@ -4,6 +4,40 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  static boolean isWellFormed(String str){
+    java.util.Stack<Character> s = new java.util.Stack<>();
+    for(int i = 0; i < str.length(); i++){
+      char c = str.charAt(i);
+      switch(c){
+        case '(':
+        case '{':
+        case '[':
+          s.push(c);
+          break;
+        case ']':
+          if(s.isEmpty() || s.peek() != '[') return false;
+          s.pop();
+          break;
+        case '}':
+          if(s.isEmpty() || s.peek() != '{') return false;
+          s.pop();
+          break;
+        case ')':
+          if(s.isEmpty() || s.peek() != '(') return false;
+          s.pop();
+          break;
+      }
+    }
+    return s.isEmpty();
+  }
+  @Test
+  public void testIsWellFormed(){
+    assertTrue(isWellFormed("([]){()}"));
+    assertTrue(isWellFormed("[()[]{()()}]"));
+    assertFalse(isWellFormed("{)"));
+    assertFalse(isWellFormed("[()[]{()()"));
+  }
+  
   static double evalRpn(String rpnExpr, char delimiter){
     java.util.Stack<Double> s = new java.util.Stack<>();
     int i = 0;
