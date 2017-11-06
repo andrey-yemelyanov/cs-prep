@@ -4,6 +4,52 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  List<Integer> computeJumpFirstOrder(ListNode head){
+    java.util.Stack<ListNode> s = new java.util.Stack<>();
+    int order = 1;
+    s.push(head);
+    while(!s.isEmpty()){
+      ListNode node = s.pop();
+      if(node != null && node.order == 0){
+        node.order = order++;
+        s.push(node.next);
+        s.push(node.jump);
+      }
+    }
+    List<Integer> jumpFirstOrder = new ArrayList<>();
+    ListNode current = head;
+    while(current != null){
+      jumpFirstOrder.add(current.order);
+      current = current.next;
+    }
+    return jumpFirstOrder;
+  }
+  static class ListNode{
+    public int order;
+    public ListNode jump;
+    public ListNode next;
+  }
+  @Test
+  public void testComputeJumpFirstOrder(){
+    ListNode nodeD = new ListNode();
+    ListNode nodeC = new ListNode();
+    ListNode nodeB = new ListNode();
+    ListNode nodeA = new ListNode();
+    
+    nodeA.next = nodeB;
+    nodeA.jump = nodeC;
+    
+    nodeB.next = nodeC;
+    nodeB.jump = nodeD;
+    
+    nodeC.next = nodeD;
+    nodeC.jump = nodeB;
+    
+    nodeD.jump = nodeD;
+    
+    assertThat(computeJumpFirstOrder(nodeA), is(Arrays.asList(1,3,2,4)));
+  }
+  
   static class Node{
     public int data;
     public Node left;
