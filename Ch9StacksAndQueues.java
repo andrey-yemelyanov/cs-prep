@@ -4,6 +4,72 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  static class Node{
+    public int data;
+    public Node left;
+    public Node right;
+    public Node(int data, Node left, Node right){
+      this.data = data;
+      this.left = left;
+      this.right = right;
+    }
+    public Node(int data){
+      this.data = data;
+    }
+  }
+  static List<Integer> traverseInorder(Node root){
+    if(root == null) return null;
+    java.util.Stack<Node> s = new java.util.Stack<>();
+    List<Integer> traversal = new ArrayList<>();
+    s.push(root);
+    while(s.peek().left != null) s.push(s.peek().left);
+    while(!s.isEmpty()){
+      Node node = s.pop();
+      traversal.add(node.data);
+      if(node.right != null){
+        s.push(node.right);
+        while(s.peek().left != null) s.push(s.peek().left);
+      }
+    }
+    return traversal;
+  }
+  @Test
+  public void testTraverseInorder(){
+    Node tree = null;
+    assertThat(traverseInorder(tree), is(nullValue()));
+    
+    tree = new Node(1, null, null);
+    assertThat(traverseInorder(tree), is(Arrays.asList(1)));
+    
+    tree = new Node(3, new Node(1), new Node(4));
+    assertThat(traverseInorder(tree), is(Arrays.asList(1,3,4)));
+    
+    tree = new Node(3, new Node(2, new Node(1), null), null);
+    assertThat(traverseInorder(tree), is(Arrays.asList(1,2,3)));
+    
+    tree = new Node(1, null, new Node(2, null, new Node(3)));
+    assertThat(traverseInorder(tree), is(Arrays.asList(1,2,3)));
+    
+    tree = new Node(
+      19,
+      new Node(
+        17,
+        new Node(
+          8,
+          null,
+          new Node(9)),
+        null),
+      new Node(
+        21,
+        new Node(20),
+        new Node(
+          60,
+          new Node(30),
+          null))
+    );
+    assertThat(traverseInorder(tree), is(Arrays.asList(8,9,17,19,20,21,30,60)));
+  }
+  
   static boolean isWellFormed(String str){
     java.util.Stack<Character> s = new java.util.Stack<>();
     for(int i = 0; i < str.length(); i++){
