@@ -4,6 +4,25 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  List<Integer> buildingsWithSunsetView(int[] buildings){
+    java.util.Stack<Integer> s = new java.util.Stack<>();
+    for(int i = buildings.length - 1; i >= 0; i--){
+      int buildingHeight = buildings[i];
+      while(!s.isEmpty() && s.peek() <= buildingHeight) s.pop();
+      s.push(buildingHeight);
+    }
+    List<Integer> withSunsetView = new ArrayList<>();
+    while(!s.isEmpty()) withSunsetView.add(s.pop());
+    return withSunsetView;
+  }
+  @Test
+  public void testBuildingsWithSunsetView(){
+    assertThat(buildingsWithSunsetView(new int[]{1}), is(Arrays.asList(1)));
+    assertThat(buildingsWithSunsetView(new int[]{5,4,3,2,1}), is(Arrays.asList(5)));
+    assertThat(buildingsWithSunsetView(new int[]{1,2,3,4,5}), is(Arrays.asList(1,2,3,4,5)));
+    assertThat(buildingsWithSunsetView(new int[]{6,1,2,3,4,5}), is(Arrays.asList(6)));
+  }
+  
   List<Integer> computeJumpFirstOrder(ListNode head){
     java.util.Stack<ListNode> s = new java.util.Stack<>();
     int order = 1;
