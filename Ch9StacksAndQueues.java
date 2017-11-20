@@ -4,6 +4,74 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  void sortStack(java.util.Stack<Integer> s){
+    if(s.isEmpty()) return;
+    int top = s.pop();
+    sortStack(s);
+    insertInSortedOrder(top, s);
+  }
+  void insertInSortedOrder(int item, java.util.Stack<Integer> s){
+    if(s.isEmpty() || s.peek() <= item) s.push(item);
+    else{
+      int top = s.pop();
+      insertInSortedOrder(item, s);
+      s.push(top);
+    }
+  }
+  @Test
+  public void testSortStack(){
+    java.util.Stack<Integer> s = new java.util.Stack<>();
+    sortStack(s);
+    assertTrue(s.isEmpty());
+    
+    s.push(5);
+    sortStack(s);
+    java.util.Stack<Integer> expected = new java.util.Stack<>();
+    expected.push(5);
+    assertThat(s, is(expected));
+    
+    s.push(4);
+    s.push(3);
+    s.push(2);
+    s.push(1);
+    sortStack(s);
+    expected = new java.util.Stack<>();
+    expected.push(1);
+    expected.push(2);
+    expected.push(3);
+    expected.push(4);
+    expected.push(5);
+    assertThat(s, is(expected));
+    
+    s.clear();
+    s.push(1);
+    s.push(2);
+    s.push(3);
+    s.push(4);
+    sortStack(s);
+    expected = new java.util.Stack<>();
+    expected.push(1);
+    expected.push(2);
+    expected.push(3);
+    expected.push(4);
+    assertThat(s, is(expected));
+    
+    s.clear();
+    s.push(7);
+    s.push(1);
+    s.push(3);
+    s.push(5);
+    s.push(2);
+    sortStack(s);
+    expected = new java.util.Stack<>();
+    expected.push(1);
+    expected.push(2);
+    expected.push(3);
+    expected.push(5);
+    expected.push(7);
+    assertThat(s, is(expected));
+  }
+  
   List<Integer> buildingsWithSunsetView(int[] buildings){
     java.util.Stack<Integer> s = new java.util.Stack<>();
     for(int i = buildings.length - 1; i >= 0; i--){
