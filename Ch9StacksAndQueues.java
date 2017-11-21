@@ -4,6 +4,118 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  // returns average of keys at each level
+  List<Double> averageOnEachLevel(Node tree){
+    Queue<Node> q = new LinkedList<>();
+    q.add(tree);
+    int nNodesAtCurrentLevel = 1;
+    int sum = 0;
+    int nNodes = nNodesAtCurrentLevel;
+    List<Double> avg = new ArrayList<>();
+    while(!q.isEmpty()){
+      Node node = q.remove();
+      sum += node.data;
+      nNodesAtCurrentLevel--;
+      if(node.left != null) q.add(node.left);
+      if(node.right != null) q.add(node.right);
+      if(nNodesAtCurrentLevel == 0){
+        avg.add((double) sum / nNodes);
+        nNodes = nNodesAtCurrentLevel = q.size();
+        sum = 0;
+      }
+    }
+    return avg;
+  }
+  @Test
+  public void testAverageOnEachLevel(){
+    Node tree = new Node(314,
+      new Node(6, 
+        new Node(271, 
+          new Node(28), 
+          new Node(0)), 
+        new Node(561, 
+          null, 
+          new Node(3,
+            new Node(17),
+            null))),
+      new Node(7, 
+        new Node(2,
+          null,
+          new Node(1,
+            new Node(401,
+              null,
+              new Node(641)),
+            new Node(257))), 
+        new Node(271,
+          null,
+          new Node(28))));
+    List<Double> expected = Arrays.asList(314.0, 6.5, 276.25, 12.0, 225.0, 641.0);
+    assertThat(averageOnEachLevel(tree), is(expected));
+  }
+  
+  List<List<Integer>> alternatingLevelOrderTraversal(Node tree){
+    List<List<Integer>> levelOrderTraversal = levelOrderTraversal(tree);
+    for(int i = 0; i < levelOrderTraversal.size(); i++){
+      if(i % 2 != 0){
+        Collections.reverse(levelOrderTraversal.get(i));
+      }
+    }
+    return levelOrderTraversal;
+  }
+  List<List<Integer>> levelOrderTraversal(Node tree){
+    Queue<Node> q = new LinkedList<>();
+    q.add(tree);
+    int nNodesAtCurrentLevel = 1;
+    List<List<Integer>> traversal = new ArrayList<>();
+    List<Integer> currentLevel = new ArrayList<>();
+    while(!q.isEmpty()){
+      Node node = q.remove();
+      currentLevel.add(node.data);
+      nNodesAtCurrentLevel--;
+      if(node.left != null) q.add(node.left);
+      if(node.right != null) q.add(node.right);
+      if(nNodesAtCurrentLevel == 0){
+        nNodesAtCurrentLevel = q.size();
+        traversal.add(currentLevel);
+        currentLevel = new ArrayList<>();
+      }
+    }
+    return traversal;
+  }
+  @Test
+  public void testAlternatingLevelOrderTraversal(){
+    Node tree = new Node(314,
+      new Node(6, 
+        new Node(271, 
+          new Node(28), 
+          new Node(0)), 
+        new Node(561, 
+          null, 
+          new Node(3,
+            new Node(17),
+            null))),
+      new Node(7, 
+        new Node(2,
+          null,
+          new Node(1,
+            new Node(401,
+              null,
+              new Node(641)),
+            new Node(257))), 
+        new Node(271,
+          null,
+          new Node(28))));
+          
+    List<List<Integer>> expected = new ArrayList<>();
+    expected.add(Arrays.asList(314));
+    expected.add(Arrays.asList(7,6));
+    expected.add(Arrays.asList(271,561,2,271));
+    expected.add(Arrays.asList(28,1,3,0,28));
+    expected.add(Arrays.asList(17,401,257));
+    expected.add(Arrays.asList(641));
+    assertThat(alternatingLevelOrderTraversal(tree), is(expected));
+  }
+  
   void sortStack(java.util.Stack<Integer> s){
     if(s.isEmpty()) return;
     int top = s.pop();
