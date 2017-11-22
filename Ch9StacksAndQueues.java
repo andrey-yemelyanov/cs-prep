@@ -4,6 +4,56 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  class StackBasedQueue{
+    private int size = 0;
+    private java.util.Stack<Integer> s1 = new java.util.Stack<>();
+    private java.util.Stack<Integer> s2 = new java.util.Stack<>();
+    public int dequeue(){
+      if(size == 0) throw new RuntimeException("Queue is empty.");
+      if(s2.isEmpty()){
+        while(!s1.isEmpty()) s2.push(s1.pop());
+      }
+      int item = s2.pop();
+      size--;
+      return item;
+    }
+    public void enqueue(int item){
+      s1.push(item);
+      size++;
+    }
+    public int size(){
+      return size;
+    }
+  }
+  @Test
+  public void testStackBasedQueue(){
+    StackBasedQueue q = new StackBasedQueue();
+    assertThat(q.size(), is(0));
+    q.enqueue(1);
+    assertThat(q.size(), is(1));
+    q.enqueue(2);
+    q.enqueue(3);
+    q.enqueue(4);
+    q.enqueue(5);
+    q.enqueue(6);
+    assertThat(q.size(), is(6));
+    assertThat(q.dequeue(), is(1));
+    assertThat(q.dequeue(), is(2));
+    assertThat(q.dequeue(), is(3));
+    assertThat(q.dequeue(), is(4));
+    assertThat(q.dequeue(), is(5));
+    assertThat(q.dequeue(), is(6));
+    assertThat(q.size(), is(0));
+    q.enqueue(7);
+    q.enqueue(8);
+    assertThat(q.dequeue(), is(7));
+    q.enqueue(9);
+    q.enqueue(10);
+    assertThat(q.dequeue(), is(8));
+    assertThat(q.dequeue(), is(9));
+    assertThat(q.size(), is(1));
+  }
+
   class CircularQueue<T>{
     private T[] q;
     private int head;
