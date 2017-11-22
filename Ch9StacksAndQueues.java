@@ -4,6 +4,61 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch9StacksAndQueues{
+  class CircularQueue<T>{
+    private T[] q;
+    private int head;
+    private int tail;
+    private int size;
+    public CircularQueue(int capacity){
+      q = (T[]) new Object[capacity];
+    }
+    public int size(){
+      return size;
+    }
+    public T dequeue(){
+      if(size == 0) throw new RuntimeException("Queue is empty.");
+      T item = q[head];
+      head = (head + 1) % q.length;
+      size--;
+      return item;
+    }
+    public void enqueue(T item){
+      if(size == q.length) resize();
+      q[tail] = item;
+      tail = (tail + 1) % q.length;
+      size++;
+    }
+    private void resize(){
+      T[] new_q = (T[]) new Object[q.length * 2];
+      for(int i = 0; i < q.length; i++){
+        new_q[i] = q[(head + i) % q.length];
+      }
+      head = 0;
+      tail = size;
+      q = new_q;
+    }
+  }
+  @Test
+  public void testQueue(){
+    CircularQueue<Integer> q = new CircularQueue<>(3);
+    assertThat(q.size(), is(0));
+    q.enqueue(1);
+    assertThat(q.size(), is(1));
+    q.enqueue(2);
+    q.enqueue(3);
+    q.enqueue(4);
+    q.enqueue(5);
+    q.enqueue(6);
+    assertThat(q.size(), is(6));
+    assertThat(q.dequeue(), is(1));
+    assertThat(q.dequeue(), is(2));
+    assertThat(q.dequeue(), is(3));
+    assertThat(q.dequeue(), is(4));
+    assertThat(q.dequeue(), is(5));
+    assertThat(q.dequeue(), is(6));
+    assertThat(q.size(), is(0));
+  }
+
   // returns average of keys at each level
   List<Double> averageOnEachLevel(Node tree){
     Queue<Node> q = new LinkedList<>();
@@ -29,30 +84,30 @@ public class Ch9StacksAndQueues{
   @Test
   public void testAverageOnEachLevel(){
     Node tree = new Node(314,
-      new Node(6, 
-        new Node(271, 
-          new Node(28), 
-          new Node(0)), 
-        new Node(561, 
-          null, 
+      new Node(6,
+        new Node(271,
+          new Node(28),
+          new Node(0)),
+        new Node(561,
+          null,
           new Node(3,
             new Node(17),
             null))),
-      new Node(7, 
+      new Node(7,
         new Node(2,
           null,
           new Node(1,
             new Node(401,
               null,
               new Node(641)),
-            new Node(257))), 
+            new Node(257))),
         new Node(271,
           null,
           new Node(28))));
     List<Double> expected = Arrays.asList(314.0, 6.5, 276.25, 12.0, 225.0, 641.0);
     assertThat(averageOnEachLevel(tree), is(expected));
   }
-  
+
   List<List<Integer>> alternatingLevelOrderTraversal(Node tree){
     List<List<Integer>> levelOrderTraversal = levelOrderTraversal(tree);
     for(int i = 0; i < levelOrderTraversal.size(); i++){
@@ -85,27 +140,27 @@ public class Ch9StacksAndQueues{
   @Test
   public void testAlternatingLevelOrderTraversal(){
     Node tree = new Node(314,
-      new Node(6, 
-        new Node(271, 
-          new Node(28), 
-          new Node(0)), 
-        new Node(561, 
-          null, 
+      new Node(6,
+        new Node(271,
+          new Node(28),
+          new Node(0)),
+        new Node(561,
+          null,
           new Node(3,
             new Node(17),
             null))),
-      new Node(7, 
+      new Node(7,
         new Node(2,
           null,
           new Node(1,
             new Node(401,
               null,
               new Node(641)),
-            new Node(257))), 
+            new Node(257))),
         new Node(271,
           null,
           new Node(28))));
-          
+
     List<List<Integer>> expected = new ArrayList<>();
     expected.add(Arrays.asList(314));
     expected.add(Arrays.asList(7,6));
@@ -115,7 +170,7 @@ public class Ch9StacksAndQueues{
     expected.add(Arrays.asList(641));
     assertThat(alternatingLevelOrderTraversal(tree), is(expected));
   }
-  
+
   void sortStack(java.util.Stack<Integer> s){
     if(s.isEmpty()) return;
     int top = s.pop();
@@ -135,13 +190,13 @@ public class Ch9StacksAndQueues{
     java.util.Stack<Integer> s = new java.util.Stack<>();
     sortStack(s);
     assertTrue(s.isEmpty());
-    
+
     s.push(5);
     sortStack(s);
     java.util.Stack<Integer> expected = new java.util.Stack<>();
     expected.push(5);
     assertThat(s, is(expected));
-    
+
     s.push(4);
     s.push(3);
     s.push(2);
@@ -154,7 +209,7 @@ public class Ch9StacksAndQueues{
     expected.push(4);
     expected.push(5);
     assertThat(s, is(expected));
-    
+
     s.clear();
     s.push(1);
     s.push(2);
@@ -167,7 +222,7 @@ public class Ch9StacksAndQueues{
     expected.push(3);
     expected.push(4);
     assertThat(s, is(expected));
-    
+
     s.clear();
     s.push(7);
     s.push(1);
@@ -183,7 +238,7 @@ public class Ch9StacksAndQueues{
     expected.push(7);
     assertThat(s, is(expected));
   }
-  
+
   List<Integer> buildingsWithSunsetView(int[] buildings){
     java.util.Stack<Integer> s = new java.util.Stack<>();
     for(int i = buildings.length - 1; i >= 0; i--){
@@ -202,7 +257,7 @@ public class Ch9StacksAndQueues{
     assertThat(buildingsWithSunsetView(new int[]{1,2,3,4,5}), is(Arrays.asList(1,2,3,4,5)));
     assertThat(buildingsWithSunsetView(new int[]{6,1,2,3,4,5}), is(Arrays.asList(6)));
   }
-  
+
   List<Integer> computeJumpFirstOrder(ListNode head){
     java.util.Stack<ListNode> s = new java.util.Stack<>();
     int order = 1;
@@ -234,21 +289,21 @@ public class Ch9StacksAndQueues{
     ListNode nodeC = new ListNode();
     ListNode nodeB = new ListNode();
     ListNode nodeA = new ListNode();
-    
+
     nodeA.next = nodeB;
     nodeA.jump = nodeC;
-    
+
     nodeB.next = nodeC;
     nodeB.jump = nodeD;
-    
+
     nodeC.next = nodeD;
     nodeC.jump = nodeB;
-    
+
     nodeD.jump = nodeD;
-    
+
     assertThat(computeJumpFirstOrder(nodeA), is(Arrays.asList(1,3,2,4)));
   }
-  
+
   static class Node{
     public int data;
     public Node left;
@@ -282,19 +337,19 @@ public class Ch9StacksAndQueues{
   public void testTraverseInorder(){
     Node tree = null;
     assertThat(traverseInorder(tree), is(nullValue()));
-    
+
     tree = new Node(1, null, null);
     assertThat(traverseInorder(tree), is(Arrays.asList(1)));
-    
+
     tree = new Node(3, new Node(1), new Node(4));
     assertThat(traverseInorder(tree), is(Arrays.asList(1,3,4)));
-    
+
     tree = new Node(3, new Node(2, new Node(1), null), null);
     assertThat(traverseInorder(tree), is(Arrays.asList(1,2,3)));
-    
+
     tree = new Node(1, null, new Node(2, null, new Node(3)));
     assertThat(traverseInorder(tree), is(Arrays.asList(1,2,3)));
-    
+
     tree = new Node(
       19,
       new Node(
@@ -314,7 +369,7 @@ public class Ch9StacksAndQueues{
     );
     assertThat(traverseInorder(tree), is(Arrays.asList(8,9,17,19,20,21,30,60)));
   }
-  
+
   static boolean isWellFormed(String str){
     java.util.Stack<Character> s = new java.util.Stack<>();
     for(int i = 0; i < str.length(); i++){
@@ -348,7 +403,7 @@ public class Ch9StacksAndQueues{
     assertFalse(isWellFormed("{)"));
     assertFalse(isWellFormed("[()[]{()()"));
   }
-  
+
   static double evalRpn(String rpnExpr, char delimiter){
     java.util.Stack<Double> s = new java.util.Stack<>();
     int i = 0;
@@ -396,7 +451,7 @@ public class Ch9StacksAndQueues{
     assertThat(evalRpn("3,-4,/,5,*",','), is(-3.75));
     assertThat(evalRpn("3.6,-2,/,5,*",','), is(-9.0));
   }
-  
+
   // Implements a stack with Max api. To ensure that pop, push and max have time complexity O(1)
   // for each entry in the stack, we store the max value at or below that entry. Space O(n).
   class Stack{
