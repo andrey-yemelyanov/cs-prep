@@ -4,6 +4,46 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch10BinaryTrees{
+  Node findLca(Node root, int node1, int node2){
+    return findLcaRec(root, node1, node2).lca;
+  }
+  LcaResult findLcaRec(Node root, int node1, int node2){
+    if(root == null) return new LcaResult();
+    LcaResult left = findLcaRec(root.left, node1, node2);
+    if(left.lca != null) return left;
+    LcaResult right = findLcaRec(root.right, node1, node2);
+    if(right.lca != null) return right;
+    int nNodesFound = left.nNodes + right.nNodes 
+      + ((root.data == node1 || root.data == node2) ? 1 : 0);
+    return new LcaResult(nNodesFound, nNodesFound == 2 ? root : null);
+  }
+  class LcaResult{
+    public int nNodes;
+    public Node lca;
+    public LcaResult(){}
+    public LcaResult(int nNodes, Node lca){
+      this.nNodes = nNodes;
+      this.lca = lca;
+    }
+  }
+  @Test
+  public void testFindLca(){
+    Node tree = new Node(1, new Node(2, null, null), new Node(3, null, null));
+    assertThat(findLca(tree, 2, 3).data, is(1));
+    assertThat(findLca(tree, 2, 1).data, is(1));
+    
+    tree = new Node(1, 
+            new Node(2, 
+              new Node(4, null, null), 
+              new Node(5, null, null)), 
+            new Node(3, 
+              new Node(6, null, null), 
+              new Node(7, null, null)));
+    assertThat(findLca(tree, 2, 7).data, is(1));
+    assertThat(findLca(tree, 4, 5).data, is(2));
+    assertThat(findLca(tree, 3, 6).data, is(3));
+  }
+  
   BalanceCheck isBalanced(Node tree){
     if(tree == null) return new BalanceCheck(true, -1);
     BalanceCheck left = isBalanced(tree.left);
