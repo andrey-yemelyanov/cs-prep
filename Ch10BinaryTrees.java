@@ -4,6 +4,37 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch10BinaryTrees{
+  // find k-th node in inorder traversal
+  Node findKthNode(Node root, int k){
+    if(root == null) return null;
+    int nLeft = root.left != null ? root.left.count : 0;
+    int nRight = root.right != null ? root.right.count : 0;
+    if(nLeft + 1 == k) return root;
+    if(nLeft >= k) return findKthNode(root.left, k);
+    return findKthNode(root.right, k - nLeft - 1);
+  }
+  @Test
+  public void testFindKthNode(){
+    Node tree = new Node('A', 
+      new Node('B', 
+        new Node('C', null, null, 1),
+        new Node('D', null, null, 1),
+        3),
+      new Node('E',
+        new Node('F', null, null, 1),
+        new Node('G', null, null, 1),
+        3),
+      7);
+    assertThat(findKthNode(tree, 10), is(nullValue()));
+    assertThat((char)findKthNode(tree, 1).data, is('C'));
+    assertThat((char)findKthNode(tree, 2).data, is('B'));
+    assertThat((char)findKthNode(tree, 3).data, is('D'));
+    assertThat((char)findKthNode(tree, 4).data, is('A'));
+    assertThat((char)findKthNode(tree, 5).data, is('F'));
+    assertThat((char)findKthNode(tree, 6).data, is('E'));
+    assertThat((char)findKthNode(tree, 7).data, is('G'));
+  }
+  
   Node findLca(Node root, int node1, int node2){
     return findLcaRec(root, node1, node2).lca;
   }
@@ -66,10 +97,17 @@ public class Ch10BinaryTrees{
     public int data;
     public Node left;
     public Node right;
+    public int count;
     public Node(int data, Node left, Node right){
       this.data = data;
       this.left = left;
       this.right = right;
+    }
+    public Node(int data, Node left, Node right, int count){
+      this.data = data;
+      this.left = left;
+      this.right = right;
+      this.count = count;
     }
     public Node(Node left, Node right){
       this.left = left;
