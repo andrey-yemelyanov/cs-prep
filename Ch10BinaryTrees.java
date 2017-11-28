@@ -4,6 +4,69 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch10BinaryTrees{
+  List<Node> traverseInorder(Node tree){
+    List<Node> traversal = new ArrayList<>();
+    Node current = tree;
+    if(tree == null) return traversal;
+    while(current.left != null) current = current.left;
+    Node prev = null;
+    while(current != null){
+      if(current.left == prev) traversal.add(current);
+      if(current.right == null || current.right == prev){
+        prev = current;
+        current = current.parent;
+      }else{
+        if(current.right != null){
+          current = current.right;
+          while(current.left != null) current = current.left;
+          prev = null;
+        }
+      }
+    }
+    return traversal;
+  }
+  @Test
+  public void testTraverseInorder(){
+    Node tree = new Node(1, null, null, null);
+    assertThat(toIntList(traverseInorder(tree)), is(Arrays.asList(1)));
+    tree.right = new Node(2,null,null,tree);
+    assertThat(toIntList(traverseInorder(tree)), is(Arrays.asList(1,2)));
+    tree.right = null;
+    tree.left = new Node(2,null,null,tree);
+    assertThat(toIntList(traverseInorder(tree)), is(Arrays.asList(2,1)));
+    
+    Node n1 = new Node(1);
+    Node n2 = new Node(2);
+    Node n3 = new Node(3);
+    n1.left = n2; n1.right = n3;
+    n2.parent = n1; n3.parent = n1;
+    assertThat(toIntList(traverseInorder(n1)), is(Arrays.asList(2,1,3)));
+    
+    Node n4 = new Node(4);
+    Node n5 = new Node(5);
+    Node n6 = new Node(6);
+    Node n7 = new Node(7);
+    n2.left = n4; n2.right = n5;
+    n3.left = n6; n3.right = n7;
+    n4.parent = n2; n5.parent = n2;
+    n6.parent = n3; n7.parent = n3;
+    assertThat(toIntList(traverseInorder(n1)), is(Arrays.asList(4,2,5,1,6,3,7)));
+    
+    Node n8 = new Node(8);
+    Node n9 = new Node(9);
+    Node n10 = new Node(10);
+    n4.right = n9;
+    n5.left = n8;
+    n7.right = n10;
+    n9.parent = n4; n8.parent = n5; n10.parent = n7;
+    assertThat(toIntList(traverseInorder(n1)), is(Arrays.asList(4,9,2,8,5,1,6,3,7,10)));
+  }
+  List<Integer> toIntList(List<Node> nodes){
+    List<Integer> list = new ArrayList<>();
+    for(Node node : nodes) list.add(node.data);
+    return list;
+  }
+  
   // find k-th node in inorder traversal
   Node findKthNode(Node root, int k){
     if(root == null) return null;
@@ -98,10 +161,20 @@ public class Ch10BinaryTrees{
     public Node left;
     public Node right;
     public int count;
+    public Node parent;
+    public Node(int data){
+      this.data = data;
+    }
     public Node(int data, Node left, Node right){
       this.data = data;
       this.left = left;
       this.right = right;
+    }
+    public Node(int data, Node left, Node right, Node parent){
+      this.data = data;
+      this.left = left;
+      this.right = right;
+      this.parent = parent;
     }
     public Node(int data, Node left, Node right, int count){
       this.data = data;
