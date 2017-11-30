@@ -4,10 +4,64 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch10BinaryTrees{
+  List<Node> computeExterior(Node tree){
+    if(tree == null) return null;
+    List<Node> exterior = new ArrayList<>();
+    exterior.add(tree);
+    traverseLeft(tree.left, exterior, true);
+    traverseRight(tree.right, exterior, true);
+    return exterior;
+  }
+  void traverseLeft(Node root, List<Node> nodes, boolean isBoundary){
+    if(root == null) return;
+    if(isBoundary) nodes.add(root);
+    traverseLeft(root.left, nodes, isBoundary || isLeaf(root.left));
+    traverseLeft(root.right, nodes, isLeaf(root.right) || (isBoundary && root.left == null));
+  }
+  void traverseRight(Node root, List<Node> nodes, boolean isBoundary){
+    if(root == null) return;
+    traverseRight(root.left, nodes, isLeaf(root.left) || (isBoundary && root.right == null));
+    traverseRight(root.right, nodes, isBoundary || isLeaf(root.right));
+    if(isBoundary) nodes.add(root);
+  }
+  boolean isLeaf(Node node){
+    return node != null && node.left == null && node.right == null;
+  }
+  @Test
+  public void testComputeExterior(){
+    Node tree = new Node('A',
+      new Node('B',
+        new Node('C', 
+          new Node('D', null, null),
+          new Node('E', null, null)),
+        new Node('F', 
+          null, 
+          new Node('G', 
+            new Node('H'),
+            null))),
+      new Node('I',
+        new Node('J',
+          null,
+          new Node('K', 
+            new Node('L', 
+              null, 
+              new Node('M', null, null)),
+            new Node('N', null, null))),
+        new Node('O',
+          null,
+          new Node('P', null, null))));
+    assertThat(toCharList(computeExterior(tree)), is(Arrays.asList('A', 'B', 'C', 'D', 'E', 'H', 'M', 'N', 'P', 'O', 'I')));
+  }
+  List<Character> toCharList(List<Node> nodes){
+    List<Character> list = new ArrayList<>();
+    for(Node node : nodes) list.add((char)node.data);
+    return list;
+  }
+  
   List<Node> traverseInorder(Node tree){
     List<Node> traversal = new ArrayList<>();
     Node current = tree;
-    if(tree == null) return traversal;
+    if(tree == null) return traversal; 
     while(current.left != null) current = current.left;
     Node prev = null;
     while(current != null){
