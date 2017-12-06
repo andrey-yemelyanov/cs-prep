@@ -4,6 +4,23 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch11Heaps{
+  int[] sortAlmostSorted(int[] arr, int k){
+    Queue<Integer> pq = new PriorityQueue<>();
+    for(int i = 0; i < k + 1 && i < arr.length; i++) pq.add(arr[i]);
+    int j = 0;
+    for(int i = k + 1; i < arr.length; i++){
+      arr[j++] = pq.poll();
+      pq.add(arr[i]);
+    }
+    while(!pq.isEmpty()) arr[j++] = pq.poll();
+    return arr;
+  }
+  @Test
+  public void testSortAlmostSorted(){
+    assertThat(sortAlmostSorted(new int[]{3,-1,2,6,4,5,8}, 2), is(new int[]{-1,2,3,4,5,6,8}));
+    assertThat(sortAlmostSorted(new int[]{2,1,3,5,4,7,6,8}, 1), is(new int[]{1,2,3,4,5,6,7,8}));
+  }
+  
   List<Integer> sortIncreasingDecreasingArray(int[] arr){
     List<List<Integer>> lists = new ArrayList<>();
     List<Integer> list = new ArrayList<>();
