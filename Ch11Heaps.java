@@ -4,6 +4,44 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch11Heaps{
+  List<Integer> sortIncreasingDecreasingArray(int[] arr){
+    List<List<Integer>> lists = new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
+    if(arr.length == 0) return list;
+    list.add(arr[0]);
+    boolean increasing = true;
+    for(int i = 1; i < arr.length; i++){
+      if(increasing){
+        if(arr[i] > arr[i - 1]) list.add(arr[i]);
+        else{
+          increasing = false;
+          lists.add(list);
+          list = new ArrayList<>();
+          list.add(arr[i]);
+        }
+      }else{
+        if(arr[i] < arr[i - 1]) list.add(arr[i]);
+        else{
+          increasing = true;
+          Collections.reverse(list);
+          lists.add(list);
+          list = new ArrayList<>();
+          list.add(arr[i]);
+        }
+      }
+    }
+    if(!increasing) Collections.reverse(list);
+    lists.add(list);
+    return mergeLists(lists.toArray(new List[0]));
+  }
+  @Test
+  public void testSortKIncreasingDecreasingArray(){
+    assertThat(
+      sortIncreasingDecreasingArray(new int[]{57,131,493,294,221,339,418,452,442,190}),
+      is(Arrays.asList(57,131,190,221,294,339,418,442,452,493))
+    );
+  }
+  
   class Element{
     public int value;
     public int list;
