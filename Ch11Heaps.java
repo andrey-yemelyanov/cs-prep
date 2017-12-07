@@ -4,6 +4,49 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch11Heaps{
+  class MedianTracker{
+    private Queue<Integer> minHeap = new PriorityQueue<>();
+    private Queue<Integer> maxHeap = new PriorityQueue<>(new Comparator<Integer>(){
+      @Override
+      public int compare(Integer e1, Integer e2){
+        return Integer.compare(e2, e1);
+      }
+    });
+    public void addElement(int element){
+      if(maxHeap.isEmpty() || element <= maxHeap.peek()) maxHeap.add(element);
+      else minHeap.add(element);
+      balanceHeaps();
+    }
+    private void balanceHeaps(){
+      if(maxHeap.size() - minHeap.size() > 1) minHeap.add(maxHeap.poll());
+      if(minHeap.size() - maxHeap.size() > 1) maxHeap.add(minHeap.poll());
+    }
+    public double getMedian(){
+      if(maxHeap.isEmpty() && minHeap.isEmpty()) throw new RuntimeException("No elements to track.");
+      if(maxHeap.size() > minHeap.size()) return maxHeap.peek();
+      if(minHeap.size() > maxHeap.size()) return minHeap.peek();
+      return (maxHeap.peek() + minHeap.peek()) / 2.0;
+    }
+  }
+  @Test
+  public void testMedianTracker(){
+    MedianTracker tracker = new MedianTracker();
+    tracker.addElement(1);
+    assertThat(tracker.getMedian(), is(1.0));
+    tracker.addElement(0);
+    assertThat(tracker.getMedian(), is(0.5));
+    tracker.addElement(3);
+    assertThat(tracker.getMedian(), is(1.0));
+    tracker.addElement(5);
+    assertThat(tracker.getMedian(), is(2.0));
+    tracker.addElement(2);
+    assertThat(tracker.getMedian(), is(2.0));
+    tracker.addElement(0);
+    assertThat(tracker.getMedian(), is(1.5));
+    tracker.addElement(1);
+    assertThat(tracker.getMedian(), is(1.0));
+  }
+  
   int[] sortAlmostSorted(int[] arr, int k){
     Queue<Integer> pq = new PriorityQueue<>();
     for(int i = 0; i < k + 1 && i < arr.length; i++) pq.add(arr[i]);
