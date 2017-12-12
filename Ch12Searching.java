@@ -4,6 +4,34 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch12Searching{
+  int squareRoot(int k){
+    int from = 0; int to = k; int root = 0;
+    while(from <= to){
+      int mid = from + (to - from) / 2;
+      long square = (long) mid * (long) mid;
+      if(square == k) return mid;
+      if(square < k){
+        from = mid + 1;
+        root = mid;
+      }else to = mid - 1;
+    }
+    return root;
+  }
+  @Test
+  public void testSquareRoot(){
+    assertThat(squareRoot(0), is(0));
+    assertThat(squareRoot(1), is(1));
+    assertThat(squareRoot(2), is(1));
+    assertThat(squareRoot(3), is(1));
+    assertThat(squareRoot(4), is(2));
+    assertThat(squareRoot(5), is(2));
+    assertThat(squareRoot(8), is(2));
+    assertThat(squareRoot(9), is(3));
+    assertThat(squareRoot(100), is(10));
+    assertThat(squareRoot(99), is(9));
+    assertThat(squareRoot(60762025), is(7795));
+  }
+  
   int findSmallestElement(int[] arr){
     if(arr[0] < arr[arr.length - 1]) return 0;
     int from = 0; int to = arr.length - 1;
