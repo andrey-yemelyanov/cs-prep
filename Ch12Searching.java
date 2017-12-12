@@ -4,6 +4,44 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch12Searching{
+  final int SMALLER = 1;
+  final int EQUAL = 2;
+  final int LARGER = 3;
+  int compare(double d1, double d2){
+    final double EPSILON = 0.00000000001;
+    double diff = d1 - d2;
+    if(diff < -EPSILON) return SMALLER;
+    if(diff > EPSILON) return LARGER;
+    return EQUAL;
+  }
+  double squareRoot(double k){
+    double from = 0; double to = 0;
+    if(k < 1.0){
+      from = k; to = 1.0;
+    }else{
+      from = 1.0; to = k;
+    }
+    
+    while(compare(from, to) == SMALLER){
+      double mid = from + 0.5 * (to - from);
+      double squared = mid * mid;
+      if(compare(squared, k) == EQUAL) return mid;
+      if(compare(squared, k) == LARGER) to = mid;
+      else from = mid;
+    }
+    
+    return from;
+  }
+  @Test
+  public void testRealSquareRoot(){
+    assertThat(squareRoot(1.0), is(1.0));
+    assertThat(String.format(Locale.US, "%.3f", squareRoot(4.0)), is("2.000"));
+    assertThat(String.format(Locale.US, "%.3f", squareRoot(0.5)), is("0.707"));
+    assertThat(String.format(Locale.US, "%.3f", squareRoot(112.0)), is("10.583"));
+    assertThat(String.format(Locale.US, "%.3f", squareRoot(1142332.0)), is("1068.799"));
+    assertThat(String.format(Locale.US, "%.3f", squareRoot(100.0)), is("10.000"));
+  }
+  
   int squareRoot(int k){
     int from = 0; int to = k; int root = 0;
     while(from <= to){
