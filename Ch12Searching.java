@@ -4,6 +4,27 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch12Searching{
+  int findSmallestElement(int[] arr){
+    if(arr[0] < arr[arr.length - 1]) return 0;
+    int from = 0; int to = arr.length - 1;
+    while(from <= to){
+      int mid = from + (to - from) / 2;
+      if(mid == 0 || arr[mid - 1] > arr[mid]) return mid;
+      if(arr[from] > arr[mid]) to = mid - 1;
+      else from = mid + 1;
+    }
+    return -1;
+  }
+  @Test
+  public void testFindSmallestElement(){
+    assertThat(findSmallestElement(new int[]{1,2,3,4,5}), is(0));
+    assertThat(findSmallestElement(new int[]{5}), is(0));
+    assertThat(findSmallestElement(new int[]{378,478,550,631,103,203,220,234,279,368}), is(4));
+    assertThat(findSmallestElement(new int[]{550,631,103,203,220,234,279,368,378,478}), is(2));
+    assertThat(findSmallestElement(new int[]{203,220,234,279,368,378,478,550,631,103}), is(9));
+    assertThat(findSmallestElement(new int[]{631,103,203,220,234,279,368,378,478,550}), is(1));
+  }
+  
   int firstLargerThanK(int[] arr, int K){
     int from = 0; int to = arr.length - 1;
     while(from <= to){
