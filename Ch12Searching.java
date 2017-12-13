@@ -4,6 +4,43 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch12Searching{
+  int quickselect(int[] arr, int k){
+    int from = 0; int to = arr.length - 1;
+    while(from <= to){
+      int pivot = partition(arr, from, to);
+      if(pivot == k - 1) return arr[pivot];
+      if(pivot > k - 1) to = pivot - 1;
+      else from = pivot + 1;
+    }
+    return -1;
+  }
+  int partition(int[] arr, int from, int to){
+    int pivotIndex = new Random().nextInt(to - from + 1) + from;
+    int pivot = arr[pivotIndex];
+    swap(arr, pivotIndex, to);
+    int j = from;
+    for(int i = from; i < to; i++) if(arr[i] > pivot) swap(arr, j++, i);
+    swap(arr, j, to);
+    return j;
+  }
+  void swap(int[] arr, int i, int j){
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  @Test
+  public void testQuickselect(){
+    assertThat(quickselect(new int[]{3}, 1), is(3));
+    assertThat(quickselect(new int[]{3}, 2), is(-1));
+    assertThat(quickselect(new int[]{3,2,1,5,4}, 1), is(5));
+    assertThat(quickselect(new int[]{3,2,1,5,4}, 2), is(4));
+    assertThat(quickselect(new int[]{3,2,1,5,4}, 3), is(3));
+    assertThat(quickselect(new int[]{5,4,3,2,1}, 1), is(5));
+    assertThat(quickselect(new int[]{5,4,3,2,1}, 2), is(4));
+    assertThat(quickselect(new int[]{1,2,3,4,5}, 1), is(5));
+    assertThat(quickselect(new int[]{1,2,3,4,5}, 2), is(4));
+  }
+  
   final int SMALLER = 1;
   final int EQUAL = 2;
   final int LARGER = 3;
