@@ -4,6 +4,31 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch13HashTable{
+  int[] longestSubarrayWithDistinctElements(int[] arr){
+    int i = 0; int[] result = null; int maxLen = 0;
+    Map<Integer, Integer> m = new HashMap<>();
+    for(int j = 0; j < arr.length; j++){
+      if(m.containsKey(arr[j])){
+        if(m.get(arr[j]) >= i){
+          i = m.get(arr[j]) + 1;
+        }
+      }
+      m.put(arr[j], j);
+      int len = j - i + 1;
+      if(len > maxLen){
+        maxLen = len;
+        result = new int[]{i, j};
+      }
+    }
+    return result;
+  }
+  @Test
+  public void testLongestSubarrayWithDistinctElements(){
+    assertThat(longestSubarrayWithDistinctElements(new int[]{1,2,1,1,3,6,1,2,8}), is(new int[]{4,8}));
+    assertThat(longestSubarrayWithDistinctElements(new int[]{1,2,3,4,5}), is(new int[]{0,4}));
+    assertThat(longestSubarrayWithDistinctElements(new int[]{1,1,1,1,1}), is(new int[]{0,0}));
+  }
+  
   class IsbnCache{
     class Node{
       public int isbn;
