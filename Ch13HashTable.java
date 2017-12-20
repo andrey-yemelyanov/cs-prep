@@ -4,6 +4,33 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch13HashTable{
+  List<String> computeStringDecomposition(String sentence, String[] words){
+    List<String> list = new ArrayList<>();
+    int wordLen = words[0].length();
+    for(int i = 0; i + wordLen * words.length <= sentence.length(); i++){
+      if(matchAllWordsInDict(i, sentence, words)){
+        list.add(sentence.substring(i, i + words.length * wordLen));
+      }
+    }
+    return list;
+  }
+  boolean matchAllWordsInDict(int start, String sentence, String[] words){
+    Set<String> set = new HashSet<>();
+    for(String word : words) set.add(word);
+    int wordLen = words[0].length();
+    for(int i = 0; i < words.length; i++){
+      String word = sentence.substring(start + i * wordLen, start + wordLen * (i + 1));
+      if(!set.contains(word)) return false;
+      set.remove(word);
+    }
+    return true;
+  }
+  @Test
+  public void testComputeStringDecomposition(){
+    assertThat(computeStringDecomposition(
+      "amanaplanacanal", new String[]{"can","apl","ana"}), is(Arrays.asList("aplanacan")));
+  }
+  
   int[] longestSubarrayWithDistinctElements(int[] arr){
     int i = 0; int[] result = null; int maxLen = 0;
     Map<Integer, Integer> m = new HashMap<>();
