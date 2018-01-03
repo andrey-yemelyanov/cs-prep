@@ -4,6 +4,40 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch8LinkedLists{
+  static Node sort(Node list){
+    Node dummyHead = new Node();
+    dummyHead.next = list;
+    Node sortedTail = list;
+    while(sortedTail != null && sortedTail.next != null){
+      if(sortedTail.data.compareTo(sortedTail.next.data) <= 0){
+        sortedTail = sortedTail.next;
+      }else{
+        Node prev = dummyHead;
+        Node target = sortedTail.next;
+        while(prev.next.data.compareTo(target.data) < 0) prev = prev.next;
+        Node temp = prev.next;
+        prev.next = target;
+        sortedTail.next = target.next;
+        target.next = temp;
+      }
+    }
+    return dummyHead.next;
+  }
+  @Test
+  public void testSort(){
+    Node list = linkedList(1);
+    assertThat(toString(sort(list)), is(toString(linkedList(1))));
+    
+    list = linkedList(1,2,3,4);
+    assertThat(toString(sort(list)), is(toString(linkedList(1,2,3,4))));
+    
+    list = linkedList(5,4,3,2,1);
+    assertThat(toString(sort(list)), is(toString(linkedList(1,2,3,4,5))));
+    
+    list = linkedList(1,9,2,0,7);
+    assertThat(toString(sort(list)), is(toString(linkedList(0,1,2,7,9))));
+  }
+  
   static <T extends Number & Comparable<T>> Node<T> add(Node<T> list1, Node<T> list2){
     list1 = reverseList(list1);
     list2 = reverseList(list2);
