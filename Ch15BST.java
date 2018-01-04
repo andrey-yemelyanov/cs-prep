@@ -4,6 +4,59 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch15BST{
+  static List<Integer> getKLargestKeys(Node tree, int k){
+    List<Integer> keys = new ArrayList<>();
+    getKLargestKeys(tree, k, keys);
+    return keys;
+  }
+  static void getKLargestKeys(Node tree, int k, List<Integer> keys){
+    if(tree == null || keys.size() > k) return;
+    getKLargestKeys(tree.right, k, keys);
+    if(keys.size() < k){
+      keys.add(tree.data);
+      getKLargestKeys(tree.left, k, keys);
+    }
+  }
+  @Test
+  public void testGetKLargestKeys(){
+    Node tree = new Node(19,
+      new Node(7,
+        new Node(3,
+          new Node(2),
+          new Node(5)
+        ),
+        new Node(11,
+          null,
+          new Node(17,
+            new Node(13),
+            null
+          )
+        )
+      ),
+      new Node(43,
+        new Node(23,
+          null,
+          new Node(37,
+            new Node(29,
+              null,
+              new Node(31)
+            ),
+            new Node(41)
+          )
+        ),
+        new Node(47,
+          null,
+          new Node(53)
+        )
+      )
+    );
+    assertThat(getKLargestKeys(tree, 3), is(Arrays.asList(53,47,43)));
+    assertThat(getKLargestKeys(tree, 1), is(Arrays.asList(53)));
+    assertThat(getKLargestKeys(tree, 5), is(Arrays.asList(53,47,43,41,37)));
+    assertThat(getKLargestKeys(tree, 8), is(Arrays.asList(53,47,43,41,37,31,29,23)));
+    assertThat(getKLargestKeys(tree, 10), is(Arrays.asList(53,47,43,41,37,31,29,23,19,17)));
+  }
+  
   static Node searchKeyLargerThan(Node tree, int key){
     if(tree == null) return null;
     if(tree.data > key){
