@@ -4,6 +4,59 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch15BST{
+  static Node lca(Node tree, int key1, int key2){
+    if(tree == null) return null;
+    if(tree.data >= Math.min(key1, key2) && tree.data <= Math.max(key1, key2)) return tree;
+    if(tree.data < Math.min(key1, key2)) return lca(tree.right, key1, key2);
+    return lca(tree.left, key1, key2);
+  }
+  @Test
+  public void testLca(){
+    Node tree = new Node(19,
+      new Node(7,
+        new Node(3,
+          new Node(2),
+          new Node(5)
+        ),
+        new Node(11,
+          null,
+          new Node(17,
+            new Node(13),
+            null
+          )
+        )
+      ),
+      new Node(43,
+        new Node(23,
+          null,
+          new Node(37,
+            new Node(29,
+              null,
+              new Node(31)
+            ),
+            new Node(41)
+          )
+        ),
+        new Node(47,
+          null,
+          new Node(53)
+        )
+      )
+    );
+    assertThat(lca(tree, 2, 5).data, is(3));
+    assertThat(lca(tree, 2, 17).data, is(7));
+    assertThat(lca(tree, 2, 3).data, is(3));
+    assertThat(lca(tree, 19, 43).data, is(19));
+    assertThat(lca(tree, 2, 53).data, is(19));
+    assertThat(lca(tree, 37, 47).data, is(43));
+    assertThat(lca(tree, 31, 41).data, is(37));
+    assertThat(lca(tree, 5, 13).data, is(7));
+    assertThat(lca(tree, 47, 53).data, is(47));
+    assertThat(lca(tree, 2, 19).data, is(19));
+    assertThat(lca(tree, 19, 31).data, is(19));
+    assertThat(lca(tree, 19, 19).data, is(19));
+  }
+  
   static List<Integer> getKLargestKeys(Node tree, int k){
     List<Integer> keys = new ArrayList<>();
     getKLargestKeys(tree, k, keys);
