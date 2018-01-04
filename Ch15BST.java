@@ -4,6 +4,59 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch15BST{
+  static Node searchKeyLargerThan(Node tree, int key){
+    if(tree == null) return null;
+    if(tree.data > key){
+      Node node = searchKeyLargerThan(tree.left, key);
+      if(node != null) return node;
+      return tree;
+    }
+    return searchKeyLargerThan(tree.right, key);
+  }
+  @Test
+  public void testSearchKeyLargerThan(){
+    Node tree = new Node(19,
+      new Node(7,
+        new Node(3,
+          new Node(2),
+          new Node(5)
+        ),
+        new Node(11,
+          null,
+          new Node(17,
+            new Node(13),
+            null
+          )
+        )
+      ),
+      new Node(43,
+        new Node(23,
+          null,
+          new Node(37,
+            new Node(29,
+              null,
+              new Node(31)
+            ),
+            new Node(41)
+          )
+        ),
+        new Node(47,
+          null,
+          new Node(53)
+        )
+      )
+    );
+    assertThat(searchKeyLargerThan(tree, 23).data, is(29));
+    assertThat(searchKeyLargerThan(tree, 55), is(nullValue()));
+    assertThat(searchKeyLargerThan(tree, 0).data, is(2));
+    assertThat(searchKeyLargerThan(tree, 20).data, is(23));
+    assertThat(searchKeyLargerThan(tree, 6).data, is(7));
+    assertThat(searchKeyLargerThan(tree, 5).data, is(7));
+    assertThat(searchKeyLargerThan(tree, 30).data, is(31));
+    assertThat(searchKeyLargerThan(tree, 51).data, is(53));
+    assertThat(searchKeyLargerThan(tree, 18).data, is(19));
+  }
+  
   static Node searchForFirstOccurrence(Node tree, int key){
     if(tree == null) return null;
     if(tree.data > key) return searchForFirstOccurrence(tree.left, key);
