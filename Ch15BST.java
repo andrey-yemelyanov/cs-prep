@@ -4,6 +4,20 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch15BST{
+  static Node preorderToBst(int[] preorder){
+    return preorderToBst(preorder, 0, preorder.length - 1);
+  }
+  static Node preorderToBst(int[] preorder, int from, int to){
+    return null;
+  }
+  @Test
+  public void testPreorderToBst(){
+    assertTrue(isBinaryTreeBst(preorderToBst(new int[]{1})));
+    assertTrue(isBinaryTreeBst(preorderToBst(new int[]{1,0,2})));
+    assertTrue(isBinaryTreeBst(preorderToBst(new int[]{43,23,37,29,31,41,47,53})));
+    assertTrue(isBinaryTreeBst(preorderToBst(new int[]{19,7,3,2,5,11,17,13,43,23,37,29,31,41,47,53})));
+  }
+  
   static Node lca(Node tree, int key1, int key2){
     if(tree == null) return null;
     if(tree.data >= Math.min(key1, key2) && tree.data <= Math.max(key1, key2)) return tree;
