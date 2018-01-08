@@ -8,7 +8,21 @@ public class Ch15BST{
     return preorderToBst(preorder, 0, preorder.length - 1);
   }
   static Node preorderToBst(int[] preorder, int from, int to){
-    return null;
+    int root = preorder[from];
+    Node node = new Node(root);
+    if(from == to) return node;
+    int nLeftNodes = 0; int nRightNodes = 0;
+    for(int i = from + 1; i <= to; i++){
+      if(preorder[i] < root) nLeftNodes++;
+      if(preorder[i] > root) nRightNodes++;
+    }
+    if(nLeftNodes > 0) {
+      node.left = preorderToBst(preorder, from + 1, from + nLeftNodes);
+    }
+    if(nRightNodes > 0) {
+      node.right = preorderToBst(preorder, from + nLeftNodes + 1, from + nLeftNodes + nRightNodes);
+    }
+    return node;
   }
   @Test
   public void testPreorderToBst(){
@@ -227,7 +241,7 @@ public class Ch15BST{
     assertThat(isBinaryTreeBst(new Node(1, new Node(2), new Node(0))), is(false));
   }
   
-  class Node{
+  static class Node{
     public Node left;
     public Node right;
     public int data;
