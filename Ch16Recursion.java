@@ -4,6 +4,31 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch16Recursion{
+  static List<List<Integer>> subsets(List<Integer> set){
+    List<List<Integer>> subsets = new ArrayList<>();
+    for(long subset = 0; subset < (1 << set.size()); subset++){
+      List<Integer> subsetList = new ArrayList<>();
+      long s = subset;
+      int i = set.size() - 1;
+      while(s != 0){
+        if((s & 1) == 1) subsetList.add(set.get(i));
+        s >>= 1;
+        i--;
+      }
+      Collections.reverse(subsetList);
+      subsets.add(subsetList);
+    }
+    for(List<Integer> s : subsets) System.out.println(s);
+    System.out.println();
+    return subsets;
+  }
+  @Test
+  public void testSubsets(){
+    assertThat(subsets(Arrays.asList(1)).size(), is(2));
+    assertThat(subsets(Arrays.asList(1,2)).size(), is(4));
+    assertThat(subsets(Arrays.asList(1,2,3)).size(), is(8));
+  }
+  
   static void uniquePermutations(int[] arr, int i, int[] p, List<List<Integer>> permutations){
     if(i == arr.length){
       if(isUniquePermutation(p, arr)){
