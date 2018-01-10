@@ -4,6 +4,29 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch16Recursion{
+  static List<List<Integer>> subsets(int n, int k){
+    List<List<Integer>> subsets = new ArrayList<>();
+    subsets(n, k, 1, subsets, new ArrayList<>());
+    for(List<Integer> s : subsets) System.out.println(s);
+    System.out.println();
+    return subsets;
+  }
+  static void subsets(int n, int k, int i, List<List<Integer>> subsets, List<Integer> subset){
+    if(subset.size() == k){
+      subsets.add(new ArrayList<>(subset));
+      return;
+    }
+    for(int j = i; j <= n; j++){
+      subset.add(j);
+      subsets(n, k, j + 1, subsets, subset);
+      subset.remove(subset.size() - 1);
+    }
+  }
+  @Test
+  public void testSubsets2(){
+    assertThat(subsets(5, 3).size(), is(10));
+  }
+  
   static List<List<Integer>> subsets(List<Integer> set){
     List<List<Integer>> subsets = new ArrayList<>();
     for(long subset = 0; subset < (1 << set.size()); subset++){
