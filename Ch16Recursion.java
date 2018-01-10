@@ -43,6 +43,7 @@ public class Ch16Recursion{
   }
   @Test
   public void testPermute(){
+    assertThat(uniquePermutations(new int[]{2,3,2,3,2,3}).size(), is(20));
     assertThat(uniquePermutations(new int[]{2,3,2,3}).size(), is(6));
     assertThat(uniquePermutations(new int[]{2,3,0,2}).size(), is(12));
     assertThat(uniquePermutations(new int[]{1,2,3}).size(), is(6));
