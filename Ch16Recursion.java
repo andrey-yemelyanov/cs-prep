@@ -4,6 +4,34 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch16Recursion{
+  static List<String> generateMatchedParens(int n){
+    List<String> parens = new ArrayList<>();
+    generateMatchedParens(n, 0, 0, new StringBuilder(), parens);
+    return parens;
+  }
+  static void generateMatchedParens(int n, int nLeft, int nRight, StringBuilder current, List<String> parens){
+    if(nLeft == nRight && nLeft == n){
+      parens.add(current.toString());
+      return;
+    }
+    if(nLeft < n){
+      current.append("(");
+      generateMatchedParens(n, nLeft + 1, nRight, current, parens);
+      current.deleteCharAt(current.length() - 1);
+    }
+    if(nRight < nLeft){
+      current.append(")");
+      generateMatchedParens(n, nLeft, nRight + 1, current, parens);
+      current.deleteCharAt(current.length() - 1);
+    }
+  }
+  @Test
+  public void testGenerateMatchedParens(){
+    assertThat(generateMatchedParens(1), is(Arrays.asList("()")));
+    assertThat(generateMatchedParens(2), is(Arrays.asList("(())", "()()")));
+    assertThat(generateMatchedParens(3), is(Arrays.asList("((()))", "(()())", "(())()", "()(())", "()()()")));
+  }
+  
   static List<List<Integer>> subsets(int n, int k){
     List<List<Integer>> subsets = new ArrayList<>();
     subsets(n, k, 1, subsets, new ArrayList<>());
