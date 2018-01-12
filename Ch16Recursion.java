@@ -4,6 +4,41 @@ import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 public class Ch16Recursion{
+  static List<Node> binaryTrees(int nNodes){
+    if(nNodes == 0){
+      List<Node> empty = new ArrayList<>();
+      empty.add(null);
+      return empty;
+    }
+    List<Node> trees = new ArrayList<>();
+    for(int i = 0; i < nNodes; i++){
+      int leftTreeSize = i;
+      int rightTreeSize = nNodes - i - 1;
+      List<Node> leftTrees = binaryTrees(leftTreeSize);
+      List<Node> rightTrees = binaryTrees(rightTreeSize);
+      for(Node leftTree : leftTrees){
+        for(Node rightTree : rightTrees){
+          trees.add(new Node(leftTree, rightTree));
+        }
+      }
+    }
+    return trees;
+  }
+  static class Node{
+    public Node left;
+    public Node right;
+    public Node(Node left, Node right){
+      this.left = left;
+      this.right = right;
+    }
+  }
+  @Test
+  public void testBinaryTrees(){
+    assertThat(binaryTrees(1).size(), is(1));
+    assertThat(binaryTrees(2).size(), is(2));
+    assertThat(binaryTrees(3).size(), is(5));
+  }
+  
   static List<String> generateMatchedParens(int n){
     List<String> parens = new ArrayList<>();
     generateMatchedParens(n, 0, 0, new StringBuilder(), parens);
