@@ -1,9 +1,41 @@
 import java.util.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static java.lang.Math.*;
 import org.junit.Test;
 
 public class Ch16Recursion{
+  static Result diameterAndHeight(Node tree){
+    if(tree == null) return new Result(0, 0);
+    Result leftTree = diameterAndHeight(tree.left);
+    Result rightTree = diameterAndHeight(tree.right);
+    int longestPathThroughRoot = leftTree.height + rightTree.height + 1;
+    int treeHeight = max(leftTree.height, rightTree.height) + 1;
+    return new Result(
+      max(longestPathThroughRoot, max(leftTree.diameter, rightTree.diameter)),
+      treeHeight
+    );
+  }
+  static class Result{
+    public int diameter;
+    public int height;
+    public Result(int diameter, int height){
+      this.diameter = diameter;
+      this.height = height;
+    }
+  }
+  @Test
+  public void testDiameterAndHeight(){
+    assertThat(diameterAndHeight(new Node(null, null)).diameter, is(1));
+    assertThat(diameterAndHeight(new Node(null, null)).height, is(1));
+
+    assertThat(diameterAndHeight(new Node(new Node(null, null), null)).diameter, is(2));
+    assertThat(diameterAndHeight(new Node(new Node(null, null), null)).height, is(2));
+
+    assertThat(diameterAndHeight(new Node(new Node(null, null), new Node(null, null))).diameter, is(3));
+    assertThat(diameterAndHeight(new Node(new Node(null, null), new Node(null, null))).height, is(2));
+  }
+
   static List<Node> binaryTrees(int nNodes){
     if(nNodes == 0){
       List<Node> empty = new ArrayList<>();
@@ -38,7 +70,7 @@ public class Ch16Recursion{
     assertThat(binaryTrees(2).size(), is(2));
     assertThat(binaryTrees(3).size(), is(5));
   }
-  
+
   static List<String> generateMatchedParens(int n){
     List<String> parens = new ArrayList<>();
     generateMatchedParens(n, 0, 0, new StringBuilder(), parens);
@@ -66,7 +98,7 @@ public class Ch16Recursion{
     assertThat(generateMatchedParens(2), is(Arrays.asList("(())", "()()")));
     assertThat(generateMatchedParens(3), is(Arrays.asList("((()))", "(()())", "(())()", "()(())", "()()()")));
   }
-  
+
   static List<List<Integer>> subsets(int n, int k){
     List<List<Integer>> subsets = new ArrayList<>();
     subsets(n, k, 1, subsets, new ArrayList<>());
@@ -89,7 +121,7 @@ public class Ch16Recursion{
   public void testSubsets2(){
     assertThat(subsets(5, 3).size(), is(10));
   }
-  
+
   static List<List<Integer>> subsets(List<Integer> set){
     List<List<Integer>> subsets = new ArrayList<>();
     for(long subset = 0; subset < (1 << set.size()); subset++){
@@ -114,7 +146,7 @@ public class Ch16Recursion{
     assertThat(subsets(Arrays.asList(1,2)).size(), is(4));
     assertThat(subsets(Arrays.asList(1,2,3)).size(), is(8));
   }
-  
+
   static void uniquePermutations(int[] arr, int i, int[] p, List<List<Integer>> permutations){
     if(i == arr.length){
       if(isUniquePermutation(p, arr)){
